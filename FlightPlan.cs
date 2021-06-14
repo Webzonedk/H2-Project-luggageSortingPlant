@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Bogus;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,13 +7,18 @@ using System.Threading.Tasks;
 
 namespace luggageSortingPlant
 {
-    class FlightPlan
+    public class FlightPlan
     {
         #region Fields
+
         private int flightNumber;
         private int seats;
         private int gateNumber;
         private DateTime departureTime;
+        private int flightPlanHours;
+
+   
+
 
         #endregion
 
@@ -39,14 +45,26 @@ namespace luggageSortingPlant
             get { return departureTime; }
             set { departureTime = value; }
         }
+        public int FlightPlanHours
+        {
+            get { return flightPlanHours; }
+            set { flightPlanHours = value; }
+        }
+        public FlightPlan()
+        {
 
-        public FlightPlan(int flightNumber, int seats, int gateNumber, DateTime departureTime)
+        }
+
+        public FlightPlan(int flightNumber, int seats, int gateNumber, DateTime departureTime, int flightPlanHours)
         {
             this.flightNumber = flightNumber;
             this.seats = seats;
             this.gateNumber = gateNumber;
             this.departureTime = departureTime;
+            this.flightPlanHours = flightPlanHours;
         }
+
+
 
 
         #endregion
@@ -56,7 +74,12 @@ namespace luggageSortingPlant
         #endregion
 
         #region Methods
-
+        public void CreateFlightPlan()
+        {
+            Faker FlightplanPeriod = new Faker();
+            FlightplanPeriod.Date.Between(DateTime.Today, DateTime.Now.AddHours(FlightPlanHours));
+          
+        }
         #endregion
     }
 }

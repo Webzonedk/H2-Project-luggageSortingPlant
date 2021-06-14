@@ -6,7 +6,7 @@ namespace luggageSortingPlant
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Manager manager = new Manager();
         }
     }
 }

@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace luggageSortingPlant
 {
-    class SortingPlantBuffer
+    class TheCleaningLady
     {
+        public void ReorderingArray()
+        {
+
+        }
     }
 }

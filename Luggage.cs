@@ -3,16 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Bogus;
 
 namespace luggageSortingPlant
 {
-    class Luggage
+    public class Luggage
     {
         #region Fields
         private int luggageNumber;
         private int passengerNumber;
         private string passengerName;
         private int flightNumber;
+        private DateTime checkInTimeStamp;
+        private DateTime sortInTimeStmap;
+        private DateTime sortOutTimeStamp;
+        private DateTime gateArrivalTimeStamp;
+
+      
         #endregion
 
 
@@ -38,17 +45,46 @@ namespace luggageSortingPlant
             get { return flightNumber; }
             set { flightNumber = value; }
         }
+        public DateTime CheckInTimeStamp
+        {
+            get { return checkInTimeStamp; }
+            set { checkInTimeStamp = value; }
+        }
 
-        #endregion
+        public DateTime SortInTimeStmap
+        {
+            get { return sortInTimeStmap; }
+            set { sortInTimeStmap = value; }
+        }
 
-        #region Constructors
-        public Luggage(int luggageNumber, int passengerNumber, string passengerName, int flightNumber)
+        public DateTime SortOutTimeStamp
+        {
+            get { return sortOutTimeStamp; }
+            set { sortOutTimeStamp = value; }
+        }
+
+        public DateTime GateArrivalTimeStamp
+        {
+            get { return gateArrivalTimeStamp; }
+            set { gateArrivalTimeStamp = value; }
+        }
+
+        public Luggage(int luggageNumber, int passengerNumber, string passengerName, int flightNumber, DateTime checkInTimeStamp, DateTime sortInTimeStmap, DateTime sortOutTimeStamp, DateTime gateArrivalTimeStamp)
         {
             this.luggageNumber = luggageNumber;
             this.passengerNumber = passengerNumber;
             this.passengerName = passengerName;
             this.flightNumber = flightNumber;
+            this.checkInTimeStamp = checkInTimeStamp;
+            this.sortInTimeStmap = sortInTimeStmap;
+            this.sortOutTimeStamp = sortOutTimeStamp;
+            this.gateArrivalTimeStamp = gateArrivalTimeStamp;
         }
+
+        #endregion
+
+        #region Constructors
+
 
         #endregion
 
@@ -57,6 +93,8 @@ namespace luggageSortingPlant
         {
 
         }
+
+
         #endregion
     }
 }
