@@ -7,6 +7,8 @@ namespace luggageSortingPlant
             public static Manager manager = new Manager();
         static void Main(string[] args)
         {
+            manager.RunSimulation();
+            
         }
     }
 }

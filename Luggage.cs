@@ -10,6 +10,10 @@ namespace luggageSortingPlant
     public class Luggage
     {
         #region Fields
+        private string workerName;
+
+
+
         private int luggageNumber;
         private int passengerNumber;
         private string passengerName;
@@ -19,12 +23,17 @@ namespace luggageSortingPlant
         private DateTime sortOutTimeStamp;
         private DateTime gateArrivalTimeStamp;
 
-      
+
         #endregion
 
 
 
         #region Properties
+        public string WorkerName
+        {
+            get { return workerName; }
+            set { workerName = value; }
+        }
         public int LuggageNumber
         {
             get { return luggageNumber; }
@@ -74,6 +83,10 @@ namespace luggageSortingPlant
         {
 
         }
+        public Luggage(string workerName)
+        {
+            this.workerName = workerName;
+        }
         public Luggage(int luggageNumber, int passengerNumber, string passengerName, int flightNumber, DateTime checkInTimeStamp, DateTime sortInTimeStmap, DateTime sortOutTimeStamp, DateTime gateArrivalTimeStamp)
         {
             this.luggageNumber = luggageNumber;
@@ -96,8 +109,35 @@ namespace luggageSortingPlant
         #region Methods
         public void CreateLuggage()
         {
+            int luggageCounter = 1;
+            int paasengerNumber = 1;
+            while (true)
+                for (int i = 0; i < Manager.luggageBuffer.Length; i++)
+                {
+                    Luggage luggage = new Luggage();
+                    luggage.LuggageNumber = luggageCounter;
+                    luggageCounter++;
+                    luggage.PassengerNumber = paasengerNumber;
+                    paasengerNumber++;
+                    Faker passengerName = new Faker();
+                    luggage.PassengerName = passengerName.Name.FullName();
 
+                    int randomFlightNumber = Manager.random.Next(0, Manager.maxPendingFlights);
+                    int countLuggage = 0;
+                    for (int j = 0; j < Manager.luggageBuffer.Length; j++)
+                    {
+                        if (Manager.luggageBuffer[j].FlightNumber == Manager.flightPlans[randomFlightNumber].FlightNumber)
+                        {
+                            countLuggage++;
+                        }
+                    }
+                    if (countLuggage < Manager.flightPlans[randomFlightNumber].Seats)
+                    {
+                        luggage.FlightNumber = randomFlightNumber;
+                    }
+                }
         }
+
 
 
         #endregion

@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace luggageSortingPlant
 {
-    class CheckIn
+    class MainEntrance
     {
         #region Fields
         private string workerName;
-
-
         #endregion
+
+
 
         #region Properties
         public string WorkerName
@@ -20,34 +20,19 @@ namespace luggageSortingPlant
             get { return workerName; }
             set { workerName = value; }
         }
-
         #endregion
 
-        #region Constructors
-        public CheckIn()
-        {
 
-        }
-        public CheckIn(string workerName)
+
+        #region Constructors
+        public MainEntrance(string workerName)
         {
             this.workerName = workerName;
         }
         #endregion
 
         #region Methods
-        public void CreateCheckIns()
-        {
-            for (int i = 1; i < Manager.amountOfCheckIns+1; i++)
-            {
-                CheckIn checkIn = new CheckIn($"Check in counter {i}");
-                Manager.checkIns.Append(checkIn);//Might be problematic
-            }
-        }
 
-        public void CheckInLuggage()
-        {
-
-        }
         #endregion
     }
 }

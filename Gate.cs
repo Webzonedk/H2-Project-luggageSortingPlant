@@ -9,14 +9,21 @@ namespace luggageSortingPlant
     class Gate
     {
         #region Fields
-        private int gateNumber;
-        private int myVar;
+        private string workerName;
 
-        public int MyProperty
+
+
+        private int gateNumber;
+
+        #endregion
+
+        #region Properties
+        public string WorkerName
         {
-            get { return myVar; }
-            set { myVar = value; }
+            get { return workerName; }
+            set { workerName = value; }
         }
+
 
         public int GateNumber
         {
@@ -24,18 +31,29 @@ namespace luggageSortingPlant
             set { gateNumber = value; }
         }
 
-        #endregion
-
-        #region Properties
 
         #endregion
 
         #region Constructors
+        public Gate()
+        {
 
+        }
+        public Gate(string workerName)
+        {
+            this.workerName = workerName;
+        }
         #endregion
 
         #region Methods
-
+        public void CreateGates()
+        {
+            for (int i = 0; i < Manager.amountOfGates; i++)
+            {
+                Gate gate = new Gate($"Gate {i}");
+                Manager.gates.Append(gate);//Might be problematic
+            }
+        }
         #endregion
     }
 }

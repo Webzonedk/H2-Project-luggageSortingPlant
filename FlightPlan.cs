@@ -10,7 +10,7 @@ namespace luggageSortingPlant
     public class FlightPlan
     {
         #region Fields
-        private string name;
+        private string workerName;
         private int flightNumber;
         private string destination;
         private int seats;
@@ -24,10 +24,10 @@ namespace luggageSortingPlant
 
         #region Properties
 
-        public string Name
+        public string WorkerName
         {
-            get { return name; }
-            set { name = value; }
+            get { return workerName; }
+            set { workerName = value; }
         }
 
         public int FlightNumber
@@ -62,9 +62,9 @@ namespace luggageSortingPlant
         {
 
         }
-                public FlightPlan(string name)
+        public FlightPlan(string workerName)
         {
-            this.name = name;
+            this.workerName = workerName;
         }
 
         public FlightPlan(int flightNumber, string destination, int seats, int gateNumber, DateTime departureTime)
@@ -99,7 +99,7 @@ namespace luggageSortingPlant
                     flightPlan.FlightNumber++;
                     flightPlan.Destination = Manager.destinations[destinationIndex];
                     flightPlan.Seats = Manager.numberOfSeats[seats];
-                    flightPlan.GateNumber = Manager.random.Next(1, Program.manager.AmountOfGates);
+                    flightPlan.GateNumber = Manager.random.Next(1, Manager.amountOfGates);
                     if (Manager.flightPlans[Manager.maxPendingFlights - 1] == null)
                     {
                         flightPlan.DepartureTime = Program.manager.CurrentTime.AddSeconds(Manager.random.Next(10, 20));
