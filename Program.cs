@@ -4,9 +4,9 @@ namespace luggageSortingPlant
 {
     class Program
     {
+            public static Manager manager = new Manager();
         static void Main(string[] args)
         {
-            Manager manager = new Manager();
         }
     }
 }

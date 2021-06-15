@@ -10,31 +10,35 @@ namespace luggageSortingPlant
     public class FlightPlan
     {
         #region Fields
-
+        private string name;
         private int flightNumber;
         private string destination;
-
-        public string Destination
-        {
-            get { return destination; }
-            set { destination = value; }
-        }
-
         private int seats;
         private int gateNumber;
         private DateTime departureTime;
-        private int flightPlanHours;
 
-   
+
 
 
         #endregion
 
         #region Properties
+
+        public string Name
+        {
+            get { return name; }
+            set { name = value; }
+        }
+
         public int FlightNumber
         {
             get { return flightNumber; }
             set { flightNumber = value; }
+        }
+        public string Destination
+        {
+            get { return destination; }
+            set { destination = value; }
         }
 
         public int Seats
@@ -53,24 +57,23 @@ namespace luggageSortingPlant
             get { return departureTime; }
             set { departureTime = value; }
         }
-        public int FlightPlanHours
-        {
-            get { return flightPlanHours; }
-            set { flightPlanHours = value; }
-        }
+
         public FlightPlan()
         {
 
         }
+                public FlightPlan(string name)
+        {
+            this.name = name;
+        }
 
-        public FlightPlan(int flightNumber, string destination, int seats, int gateNumber, DateTime departureTime, int flightPlanHours)
+        public FlightPlan(int flightNumber, string destination, int seats, int gateNumber, DateTime departureTime)
         {
             this.flightNumber = flightNumber;
             this.destination = destination;
             this.seats = seats;
             this.gateNumber = gateNumber;
             this.departureTime = departureTime;
-            this.flightPlanHours = flightPlanHours;
         }
 
 
@@ -83,12 +86,33 @@ namespace luggageSortingPlant
         #endregion
 
         #region Methods
-        public void CreateFlightPlan()
+        //Adding flights if the flightbuffer is not full
+        public void AddFlightToFlightPlan()
         {
-            Faker FlightplanPeriod = new Faker();
-            FlightplanPeriod.Date.Between(DateTime.Today, DateTime.Now.AddHours(FlightPlanHours));
-          
+            while (true)
+            {
+                if (Manager.flightPlans[Manager.maxPendingFlights] == null)
+                {
+                    int destinationIndex = Manager.random.Next(0, Manager.destinations.Length);
+                    int seats = Manager.random.Next(0, Manager.numberOfSeats.Length);
+                    FlightPlan flightPlan = new FlightPlan();
+                    flightPlan.FlightNumber++;
+                    flightPlan.Destination = Manager.destinations[destinationIndex];
+                    flightPlan.Seats = Manager.numberOfSeats[seats];
+                    flightPlan.GateNumber = Manager.random.Next(1, Program.manager.AmountOfGates);
+                    if (Manager.flightPlans[Manager.maxPendingFlights - 1] == null)
+                    {
+                        flightPlan.DepartureTime = Program.manager.CurrentTime.AddSeconds(Manager.random.Next(10, 20));
+                    }
+                    else
+                    {
+                        flightPlan.DepartureTime = Manager.flightPlans[Manager.maxPendingFlights - 1].DepartureTime.AddSeconds(Manager.random.Next(10, 20));
+                    }
+                    Manager.flightPlans[Manager.maxPendingFlights] = flightPlan;
+                }
+            }
         }
+
 
         #endregion
     }

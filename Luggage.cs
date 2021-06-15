@@ -69,6 +69,11 @@ namespace luggageSortingPlant
             set { gateArrivalTimeStamp = value; }
         }
 
+
+        public Luggage()
+        {
+
+        }
         public Luggage(int luggageNumber, int passengerNumber, string passengerName, int flightNumber, DateTime checkInTimeStamp, DateTime sortInTimeStmap, DateTime sortOutTimeStamp, DateTime gateArrivalTimeStamp)
         {
             this.luggageNumber = luggageNumber;
