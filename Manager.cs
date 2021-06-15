@@ -11,9 +11,10 @@ namespace luggageSortingPlant
     class Manager
     {
         //Global attributes adjustable from the Gui
-        public static int amountOfCheckIns =20;//Adjustable from WPF if possible
-        public static int amountOfGates =10;//Adjustable from WPF if possible
+        public static int amountOfCheckIns = 20;//Adjustable from WPF if possible
+        public static int amountOfGates = 10;//Adjustable from WPF if possible
         public static int maxPendingFlights = 20;//Adjustable from WPF if possible
+        public static int MaxLuggageBuffer = 500;
 
         //Global attributes for use in the Threads
         public static Random random = new Random();
@@ -24,15 +25,24 @@ namespace luggageSortingPlant
         "Manchester, Storbritanien", "Bornholm, Danmark", "Zurich, Schweiz",
         "Oslo, Norge", "Riga, Letland", "Beograd, Serbien" };
         public static int[] numberOfSeats = new int[5] { 150, 200, 250, 300, 350 };
+
         public static FlightPlan[] flightPlans;
         public static Luggage[] luggageBuffer;
+
         public static CheckInBuffer[] checkInBuffers;
         public static CheckIn[] checkIns;
+        public static Thread[] checkInWorkers;
+
         public static GateBuffer[] gateBuffers;
         public static Gate[] gates;
+        public static Thread[] gateWorkers;
+
         public static Luggage[] log;
 
 
+        //Initializing Classes
+        public static Luggage luggage = new();
+        public static CleaningLady cleaningLady = new();
 
         #region Fields
         private string name;
@@ -106,95 +116,57 @@ namespace luggageSortingPlant
         #region Methods
         public void RunSimulation()
         {
-            CurrentTime = DateTime.Now;
-            FlightPlan createFlights = new FlightPlan("Flightplanner");
-            Luggage createLuggage = new Luggage("LuggageCreater");
-            for (int i = 1; i < checkIns.Length+1; i++)
+            CurrentTime = DateTime.Now;//Setting the current time
+            CheckIn checkIn = new();//Initializing CheckIn 
+            checkIn.CreateCheckIns();//Run the CreateCheckIns method
+
+            //Initializing the classes
+            FlightPlan createFlights = new("Flightplanner");
+            Luggage createLuggage = new("LuggageCreater");
+            MainEntrance mainEntrance = new("Main Entrance");
+
+            //Initializing the workers
+            Thread flightPlanner = new(createFlights.AddFlightToFlightPlan);
+            Thread luggageSpawner = new(createLuggage.CreateLuggage);
+            //Initializing checkinWorkers to the checkInWorker Array using a loop
+            for (int i = 0; i < checkIns.Length; i++)
             {
-                // var name = $"checkInCounter+{i}";
-                // CheckIn checkIn = new CheckIn();
-                Thread checkInWorker = new Thread(checkIns[i].CheckInLuggage);
+                Thread checkInWorker = new(checkIns[i].CheckInLuggage);
+                checkInWorkers.Append(checkInWorker);
             }
+            //Initializing gateWorkers to the gateWorker Array using a loop
+            for (int i = 0; i < gates.Length; i++)
+            {
+                Thread gateWorker = new(gates[i].Boarding);
+                gateWorkers.Append(gateWorker);
+            }
+            Thread mainEntranceSplitter = new(mainEntrance.SendLuggageToCheckIn);
 
-            Thread flightPlanner = new Thread(createFlights.AddFlightToFlightPlan);
-            Thread luggageSpawner = new Thread(createLuggage.CreateLuggage);
 
-
+            //-------------------------------------------------------------
             //Starting the threads
+            //-------------------------------------------------------------
 
             flightPlanner.Start();
+
             // luggageSpawner.Start();
-            for (int i = 1; i < checkIns.Length + 1; i++)
-            {
-                checkIns[i]()
-            }
+
+            //foreach (Thread worker in checkInWorkers)
+            //{
+            //    worker.Start();
+            //} 
+
+            //foreach (Thread worker in gateWorkers)
+            //{
+            //    worker.Start();
+            //}
+
+            //mainEntranceSplitter.Start();
+
+
+            //-------------------------------------------------------------
+            //-------------------------------------------------------------
         }
-
-        //Adding flights if the flightbuffer is not full
-        //public void AddFlightToFlightPlan()
-        //{
-        //    while (true)
-        //    {
-        //        if (flightPlans[maxPendingFlights] == null)
-        //        {
-        //            int destinationIndex = random.Next(0, destinations.Length);
-        //            int seats = random.Next(0, numberOfSeats.Length);
-        //            FlightPlan flightPlan = new FlightPlan();
-        //            flightPlan.FlightNumber++;
-        //            flightPlan.Destination = destinations[destinationIndex];
-        //            flightPlan.Seats = numberOfSeats[seats];
-        //            flightPlan.GateNumber = random.Next(1, AmountOfGates);
-        //            if (flightPlans[maxPendingFlights - 1] == null)
-        //            {
-        //                flightPlan.DepartureTime = currentTime.AddSeconds(random.Next(10, 20));
-        //            }
-        //            else
-        //            {
-        //                flightPlan.DepartureTime = flightPlans[maxPendingFlights - 1].DepartureTime.AddSeconds(random.Next(10, 20));
-        //            }
-        //            flightPlans[maxPendingFlights] = flightPlan;
-        //        }
-        //    }
-        //}
-
-
-
-        //Creating luggage and adding it to the checkInBuffer
-        //public void CreateLuggage()
-        //{
-        //    int luggageCounter = 1;
-        //    int paasengerNumber = 1;
-        //    while (true)
-        //        for (int i = 0; i < luggageBuffer.Length; i++)
-        //        {
-        //            Luggage luggage = new Luggage();
-        //            luggage.LuggageNumber = luggageCounter;
-        //            luggageCounter++;
-        //            luggage.PassengerNumber = paasengerNumber;
-        //            paasengerNumber++;
-        //            Faker passengerName = new Faker();
-        //            luggage.PassengerName = passengerName.Name.FullName();
-
-        //            int randomFlightNumber = random.Next(0, maxPendingFlights);
-        //            int countLuggage = 0;
-        //            for (int j = 0; j < luggageBuffer.Length; j++)
-        //            {
-        //                if (luggageBuffer[j].FlightNumber == flightPlans[randomFlightNumber].FlightNumber)
-        //                {
-        //                    countLuggage++;
-        //                }
-        //            }
-        //            if (countLuggage < flightPlans[randomFlightNumber].Seats)
-        //            {
-        //                luggage.FlightNumber = randomFlightNumber;
-        //            }
-        //        }
-        //}
-
-
-
-        //Checking in luggage to the CheckinBuffer
-
 
 
 

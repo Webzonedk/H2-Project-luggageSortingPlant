@@ -114,28 +114,34 @@ namespace luggageSortingPlant
             while (true)
                 for (int i = 0; i < Manager.luggageBuffer.Length; i++)
                 {
-                    Luggage luggage = new Luggage();
-                    luggage.LuggageNumber = luggageCounter;
-                    luggageCounter++;
-                    luggage.PassengerNumber = paasengerNumber;
-                    paasengerNumber++;
-                    Faker passengerName = new Faker();
-                    luggage.PassengerName = passengerName.Name.FullName();
+                    if (Manager.luggageBuffer[i] == null)
+                    {
+                        Luggage luggage = new Luggage();
+                        luggage.LuggageNumber = luggageCounter;
+                        luggageCounter++;
+                        luggage.PassengerNumber = paasengerNumber;
+                        paasengerNumber++;
+                        Faker passengerName = new Faker();
+                        luggage.PassengerName = passengerName.Name.FullName();
 
-                    int randomFlightNumber = Manager.random.Next(0, Manager.maxPendingFlights);
-                    int countLuggage = 0;
-                    for (int j = 0; j < Manager.luggageBuffer.Length; j++)
-                    {
-                        if (Manager.luggageBuffer[j].FlightNumber == Manager.flightPlans[randomFlightNumber].FlightNumber)
+                        int randomFlightNumber = Manager.random.Next(0, Manager.maxPendingFlights);
+                        int countLuggage = 0;
+                        for (int j = 0; j < Manager.luggageBuffer.Length; j++)
                         {
-                            countLuggage++;
+                            if (Manager.luggageBuffer[j].FlightNumber == Manager.flightPlans[randomFlightNumber].FlightNumber)
+                            {
+                                countLuggage++;
+                            }
                         }
-                    }
-                    if (countLuggage < Manager.flightPlans[randomFlightNumber].Seats)
-                    {
-                        luggage.FlightNumber = randomFlightNumber;
+                        if (countLuggage < Manager.flightPlans[randomFlightNumber].Seats)
+                        {
+                            luggage.FlightNumber = randomFlightNumber;
+                            Manager.luggageBuffer[i] = luggage;
+                        }
+
                     }
                 }
+
         }
 
 

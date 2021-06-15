@@ -51,8 +51,13 @@ namespace luggageSortingPlant
             for (int i = 0; i < Manager.amountOfGates; i++)
             {
                 Gate gate = new Gate($"Gate {i}");
-                Manager.gates.Append(gate);//Might be problematic
+                Manager.gates[i]=gate;//Might be problematic
             }
+        }
+
+        public void Boarding()
+        {
+
         }
         #endregion
     }

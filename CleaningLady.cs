@@ -6,8 +6,26 @@ using System.Threading.Tasks;
 
 namespace luggageSortingPlant
 {
-    class TheCleaningLady
+    class CleaningLady
+
+
     {
+        #region Fields
+
+        #endregion
+
+        #region Properties
+
+        #endregion
+
+        #region Constructors
+        public CleaningLady()
+        {
+
+        }
+        #endregion
+
+        #region Methods
         public void ReorderingFlightPlan()
         {
             while (true)
@@ -36,5 +54,7 @@ namespace luggageSortingPlant
                 }
             }
         }
+
+        #endregion
     }
 }
