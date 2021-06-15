@@ -18,6 +18,7 @@ namespace luggageSortingPlant
         "Palma Mallorca, Spanien", "Frankfurt, Tyskland", "Aalborg, Jydeland",
         "Manchester, Storbritanien", "Bornholm, Danmark", "Zurich, Schweiz",
         "Oslo, Norge", "Riga, Letland", "Beograd, Serbien" };
+        public static int[] seats = new int[5] { 150, 200, 250, 300, 350 };
         FlightPlan flightPlan = new FlightPlan();
 
         #region Fields
@@ -137,15 +138,18 @@ namespace luggageSortingPlant
         {
 
         }
+        //Adding flights if the flightbuffer is not full
         public void AddFlightToFlightPlan()
         {
-
-         
-            if (FlightPlans.Length<maxPendingFlights)
+            if (FlightPlans.Length < maxPendingFlights)
             {
-                
+
+                int destinationIndex = random.Next(0, destinations.Length);
                 FlightPlan flightPlan = new FlightPlan();
                 flightPlan.FlightNumber++;
+                flightPlan.Destination = destinations[destinationIndex];
+
+                FlightPlans[maxPendingFlights] = flightPlan;
             }
 
         }

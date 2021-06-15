@@ -12,6 +12,14 @@ namespace luggageSortingPlant
         #region Fields
 
         private int flightNumber;
+        private string destination;
+
+        public string Destination
+        {
+            get { return destination; }
+            set { destination = value; }
+        }
+
         private int seats;
         private int gateNumber;
         private DateTime departureTime;
@@ -55,9 +63,10 @@ namespace luggageSortingPlant
 
         }
 
-        public FlightPlan(int flightNumber, int seats, int gateNumber, DateTime departureTime, int flightPlanHours)
+        public FlightPlan(int flightNumber, string destination, int seats, int gateNumber, DateTime departureTime, int flightPlanHours)
         {
             this.flightNumber = flightNumber;
+            this.destination = destination;
             this.seats = seats;
             this.gateNumber = gateNumber;
             this.departureTime = departureTime;
@@ -80,6 +89,7 @@ namespace luggageSortingPlant
             FlightplanPeriod.Date.Between(DateTime.Today, DateTime.Now.AddHours(FlightPlanHours));
           
         }
+
         #endregion
     }
 }
