@@ -36,7 +36,7 @@ namespace luggageSortingPlant
         //Adding flights if the flightbuffer is not full
         public void AddFlightToFlightPlan()
         {
-                int flightNumberCounter=0;
+            int flightNumberCounter = 0;
             while (true)
             {
                 for (int i = 0; i < MainServer.flightPlans.Length; i++)
@@ -46,7 +46,7 @@ namespace luggageSortingPlant
                         int destinationIndex = MainServer.random.Next(0, MainServer.destinations.Length);
                         int seats = MainServer.random.Next(0, MainServer.numberOfSeats.Length);
                         FlightPlan flightPlan = new FlightPlan();
-                        flightPlan.FlightNumber =flightNumberCounter;
+                        flightPlan.FlightNumber = flightNumberCounter;
                         flightNumberCounter++;
                         flightPlan.Destination = MainServer.destinations[destinationIndex];
                         flightPlan.Seats = MainServer.numberOfSeats[seats];
@@ -60,7 +60,7 @@ namespace luggageSortingPlant
                             flightPlan.DepartureTime = MainServer.flightPlans[i - 1].DepartureTime.AddSeconds(MainServer.random.Next(10, 20));
                         }
                         MainServer.flightPlans[i] = flightPlan;
-                    MainServer.outPut.PrintFlightPlan(i);//Send parameter with the method
+                        MainServer.outPut.PrintFlightPlan(i);//Send parameter with the method
                     }
                 }
 

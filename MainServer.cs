@@ -14,10 +14,10 @@ namespace luggageSortingPlant
         public static int amountOfCheckIns = 20;//Adjustable from WPF if possible
         public static int amountOfGates = 10;//Adjustable from WPF if possible
         public static int maxPendingFlights = 20;//Adjustable from WPF if possible
-        public static int MaxLuggageBuffer = 500;
+        public static int MaxLuggageBuffer = 8000;
         public static int checkInBufferSize = 50;
         public static int gateBufferSize = 50;
-        public static int logSize = 100000;
+        public static int logSize = 2000000;
 
         //Global attributes for use in the Threads
         public static Random random = new Random();
@@ -176,7 +176,7 @@ namespace luggageSortingPlant
 
             flightPlanner.Start();
 
-            // luggageSpawner.Start();
+            luggageSpawner.Start();
 
             //foreach (Thread worker in checkInWorkers)
             //{
