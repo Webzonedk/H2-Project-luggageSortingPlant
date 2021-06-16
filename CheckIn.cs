@@ -37,10 +37,10 @@ namespace luggageSortingPlant
         #region Methods
         public void CreateCheckIns()
         {
-            for (int i =0 ; i < Manager.amountOfCheckIns; i++)
+            for (int i =0 ; i < MainServer.amountOfCheckIns; i++)
             {
                 CheckIn checkIn = new CheckIn($"Check in counter {i+1}");
-                Manager.checkIns[i]=checkIn;//Might be problematic
+                MainServer.checkIns[i]=checkIn;//Might be problematic
             }
         }
 

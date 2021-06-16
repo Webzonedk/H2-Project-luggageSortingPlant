@@ -91,24 +91,24 @@ namespace luggageSortingPlant
         {
             while (true)
             {
-                if (Manager.flightPlans[Manager.maxPendingFlights] == null)
+                if (MainServer.flightPlans[MainServer.maxPendingFlights] == null)
                 {
-                    int destinationIndex = Manager.random.Next(0, Manager.destinations.Length);
-                    int seats = Manager.random.Next(0, Manager.numberOfSeats.Length);
+                    int destinationIndex = MainServer.random.Next(0, MainServer.destinations.Length);
+                    int seats = MainServer.random.Next(0, MainServer.numberOfSeats.Length);
                     FlightPlan flightPlan = new FlightPlan();
                     flightPlan.FlightNumber++;
-                    flightPlan.Destination = Manager.destinations[destinationIndex];
-                    flightPlan.Seats = Manager.numberOfSeats[seats];
-                    flightPlan.GateNumber = Manager.random.Next(1, Manager.amountOfGates);
-                    if (Manager.flightPlans[Manager.maxPendingFlights - 1] == null)
+                    flightPlan.Destination = MainServer.destinations[destinationIndex];
+                    flightPlan.Seats = MainServer.numberOfSeats[seats];
+                    flightPlan.GateNumber = MainServer.random.Next(1, MainServer.amountOfGates);
+                    if (MainServer.flightPlans[MainServer.maxPendingFlights - 1] == null)
                     {
-                        flightPlan.DepartureTime = Program.manager.CurrentTime.AddSeconds(Manager.random.Next(10, 20));
+                        flightPlan.DepartureTime = Program.manager.CurrentTime.AddSeconds(MainServer.random.Next(10, 20));
                     }
                     else
                     {
-                        flightPlan.DepartureTime = Manager.flightPlans[Manager.maxPendingFlights - 1].DepartureTime.AddSeconds(Manager.random.Next(10, 20));
+                        flightPlan.DepartureTime = MainServer.flightPlans[MainServer.maxPendingFlights - 1].DepartureTime.AddSeconds(MainServer.random.Next(10, 20));
                     }
-                    Manager.flightPlans[Manager.maxPendingFlights] = flightPlan;
+                    MainServer.flightPlans[MainServer.maxPendingFlights] = flightPlan;
                 }
             }
         }

@@ -8,7 +8,7 @@ using Bogus;
 
 namespace luggageSortingPlant
 {
-    class Manager
+    class MainServer
     {
         //Global attributes adjustable from the Gui
         public static int amountOfCheckIns = 20;//Adjustable from WPF if possible
@@ -90,12 +90,12 @@ namespace luggageSortingPlant
 
 
         #region Constructors
-        public Manager()
+        public MainServer()
         {
 
         }
 
-        public Manager(string name)
+        public MainServer(string name)
         {
             this.name = name;
         }
@@ -128,12 +128,14 @@ namespace luggageSortingPlant
             //Initializing the workers
             Thread flightPlanner = new(createFlights.AddFlightToFlightPlan);
             Thread luggageSpawner = new(createLuggage.CreateLuggage);
+
             //Initializing checkinWorkers to the checkInWorker Array using a loop
             for (int i = 0; i < checkIns.Length; i++)
             {
                 Thread checkInWorker = new(checkIns[i].CheckInLuggage);
                 checkInWorkers.Append(checkInWorker);
             }
+
             //Initializing gateWorkers to the gateWorker Array using a loop
             for (int i = 0; i < gates.Length; i++)
             {

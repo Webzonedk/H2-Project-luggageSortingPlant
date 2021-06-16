@@ -48,10 +48,10 @@ namespace luggageSortingPlant
         #region Methods
         public void CreateGates()
         {
-            for (int i = 0; i < Manager.amountOfGates; i++)
+            for (int i = 0; i < MainServer.amountOfGates; i++)
             {
                 Gate gate = new Gate($"Gate {i}");
-                Manager.gates[i]=gate;//Might be problematic
+                MainServer.gates[i]=gate;//Might be problematic
             }
         }
 

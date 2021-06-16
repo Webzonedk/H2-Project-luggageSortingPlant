@@ -4,11 +4,12 @@ namespace luggageSortingPlant
 {
     class Program
     {
-            public static Manager manager = new Manager();
+        //Initializing the manager
+        public static MainServer manager = new MainServer();
         static void Main(string[] args)
         {
             manager.RunSimulation();
-            
+
         }
     }
 }

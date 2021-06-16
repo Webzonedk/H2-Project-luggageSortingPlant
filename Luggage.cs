@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Bogus;
+using System.Threading;
 
 namespace luggageSortingPlant
 {
@@ -112,9 +113,11 @@ namespace luggageSortingPlant
             int luggageCounter = 1;
             int paasengerNumber = 1;
             while (true)
-                for (int i = 0; i < Manager.luggageBuffer.Length; i++)
+            {
+                Monitor.Enter(MainServer.luggageBuffer);//Locking the thread
+                for (int i = 0; i < MainServer.luggageBuffer.Length; i++)
                 {
-                    if (Manager.luggageBuffer[i] == null)
+                    if (MainServer.luggageBuffer[i] == null)
                     {
                         Luggage luggage = new Luggage();
                         luggage.LuggageNumber = luggageCounter;
@@ -124,28 +127,24 @@ namespace luggageSortingPlant
                         Faker passengerName = new Faker();
                         luggage.PassengerName = passengerName.Name.FullName();
 
-                        int randomFlightNumber = Manager.random.Next(0, Manager.maxPendingFlights);
+                        int randomFlightNumber = MainServer.random.Next(0, MainServer.maxPendingFlights);
                         int countLuggage = 0;
-                        for (int j = 0; j < Manager.luggageBuffer.Length; j++)
+                        for (int j = 0; j < MainServer.luggageBuffer.Length; j++)
                         {
-                            if (Manager.luggageBuffer[j].FlightNumber == Manager.flightPlans[randomFlightNumber].FlightNumber)
+                            if (MainServer.luggageBuffer[j].FlightNumber == MainServer.flightPlans[randomFlightNumber].FlightNumber)
                             {
                                 countLuggage++;
                             }
                         }
-                        if (countLuggage < Manager.flightPlans[randomFlightNumber].Seats)
+                        if (countLuggage < MainServer.flightPlans[randomFlightNumber].Seats)
                         {
                             luggage.FlightNumber = randomFlightNumber;
-                            Manager.luggageBuffer[i] = luggage;
+                            MainServer.luggageBuffer[i] = luggage;
                         }
-
                     }
                 }
-
+            }
+            #endregion
         }
-
-
-
-        #endregion
     }
 }

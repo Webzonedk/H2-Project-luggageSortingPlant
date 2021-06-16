@@ -30,11 +30,11 @@ namespace luggageSortingPlant
         {
             while (true)
             {
-                if (Manager.flightPlans[0] == null)
+                if (MainServer.flightPlans[0] == null)
                 {
-                    for (int i = 1; i < Manager.flightPlans.Length; i++)
+                    for (int i = 1; i < MainServer.flightPlans.Length; i++)
                     {
-                        Manager.flightPlans[i - 1] = Manager.flightPlans[i];
+                        MainServer.flightPlans[i - 1] = MainServer.flightPlans[i];
                     }
                 }
             }
@@ -45,11 +45,39 @@ namespace luggageSortingPlant
         {
             while (true)
             {
-                if (Manager.luggageBuffer[0] == null)
+                if (MainServer.luggageBuffer[0] == null)
                 {
-                    for (int i = 1; i < Manager.luggageBuffer.Length; i++)
+                    for (int i = 1; i < MainServer.luggageBuffer.Length; i++)
                     {
-                        Manager.luggageBuffer[i - 1] = Manager.luggageBuffer[i];
+                        MainServer.luggageBuffer[i - 1] = MainServer.luggageBuffer[i];
+                    }
+                }
+            }
+        }
+
+        public void ReorderingCheckInBuffer()
+        {
+            while (true)
+            {
+                if (MainServer.luggageBuffer[0] == null)
+                {
+                    for (int i = 1; i < MainServer.luggageBuffer.Length; i++)
+                    {
+                        MainServer.luggageBuffer[i - 1] = MainServer.luggageBuffer[i];
+                    }
+                }
+            }
+        }
+
+        public void ReorderingGateBuffer()
+        {
+            while (true)
+            {
+                if (MainServer.luggageBuffer[0] == null)
+                {
+                    for (int i = 1; i < MainServer.luggageBuffer.Length; i++)
+                    {
+                        MainServer.luggageBuffer[i - 1] = MainServer.luggageBuffer[i];
                     }
                 }
             }

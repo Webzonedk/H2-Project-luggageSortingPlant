@@ -37,13 +37,26 @@ namespace luggageSortingPlant
         {
             while (true)
             {
-                Monitor.Enter(Manager.luggageBuffer);
-                if (Manager.luggageBuffer[0]!=null)
+                Monitor.Enter(MainServer.luggageBuffer);//Locking the thread
+                Luggage luggage = new();
+                if (MainServer.luggageBuffer[0]==null)
                 {
-                    Manager.luggage = Manager.luggageBuffer[0];
-                    Manager.luggageBuffer[0] = null;
-                    Manager.cleaningLady.ReorderingLuggageBuffer();
+                    MainServer.cleaningLady.ReorderingLuggageBuffer();
+                }
+                if (MainServer.luggageBuffer[0]!=null)
+                {
+                    luggage = MainServer.luggageBuffer[0];
+                    MainServer.luggageBuffer[0] = null;
+                    MainServer.cleaningLady.ReorderingLuggageBuffer();
                     
+                }
+                Monitor.Pulse(MainServer.luggageBuffer);//Sending signal to LuggageWorker
+                Monitor.Exit(MainServer.luggageBuffer);//Unlocking thread
+
+                if (true)
+                {
+                    Monitor.Enter(MainServer.checkIns[].CheckInLuggage);//Big error........FIX IT NOW!!!!!!!
+
                 }
             }
 
