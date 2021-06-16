@@ -44,5 +44,20 @@ namespace luggageSortingPlant
             Console.Write("{0,25}", $"{MainServer.luggageBuffer[i].SortOutTimeStamp}");
             Console.Write("{0,25}", $"{MainServer.luggageBuffer[i].GateArrivalTimeStamp}\n");
         }
+
+        public void PrintCheckInBufferCapacity(int checkInNumber, int luggageInBuffer)
+        {
+            if (checkInNumber%2==0)
+            {
+            Console.BackgroundColor = ConsoleColor.Red;
+            }
+            else
+            {
+            Console.BackgroundColor = ConsoleColor.Green;
+            }
+            Console.WriteLine($"CheckIn conveyor belt: {checkInNumber} now have {luggageInBuffer} / {MainServer.checkInBufferSize} Suitcases on the band ");
+            Console.WriteLine($"CheckIn conveyor belt: {checkInNumber} now have {luggageInBuffer} / {MainServer.checkInBufferSize} Suitcases on the band ");
+            Console.ResetColor();
+        }
     }
 }

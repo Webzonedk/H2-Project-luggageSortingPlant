@@ -37,27 +37,63 @@ namespace luggageSortingPlant
         {
             while (true)
             {
-                Monitor.Enter(MainServer.luggageBuffer);//Locking the thread
                 Luggage luggage = new();
-                if (MainServer.luggageBuffer[0]==null)
+                try
                 {
-                    MainServer.cleaningLady.ReorderingLuggageBuffer();
-                }
-                if (MainServer.luggageBuffer[0]!=null)
-                {
-                    luggage = MainServer.luggageBuffer[0];
-                    MainServer.luggageBuffer[0] = null;
-                    MainServer.cleaningLady.ReorderingLuggageBuffer();
-                    
-                }
-                Monitor.Pulse(MainServer.luggageBuffer);//Sending signal to LuggageWorker
-                Monitor.Exit(MainServer.luggageBuffer);//Unlocking thread
+                    Monitor.Enter(MainServer.luggageBuffer);//Locking the thread
+                    if (MainServer.luggageBuffer[0] == null)
+                    {
+                        MainServer.cleaningLady.ReorderingLuggageBuffer();
+                    }
+                    if (MainServer.luggageBuffer[0] != null)
+                    {
+                        luggage = MainServer.luggageBuffer[0];
+                        MainServer.luggageBuffer[0] = null;
+                        MainServer.cleaningLady.ReorderingLuggageBuffer();
 
-                if (true)
-                {
-                  //  Monitor.Enter(MainServer.checkIns[].CheckInLuggage);//Big error........FIX IT NOW!!!!!!!
+                    }
+                    Monitor.Pulse(MainServer.luggageBuffer);//Sending signal to LuggageWorker
+                    Monitor.Exit(MainServer.luggageBuffer);//Unlocking thread
 
                 }
+                catch
+                {
+
+
+                }
+
+                try
+                {
+                    int gateNumber = 0;
+                    for (int i = 0; i < MainServer.flightPlans.Length; i++)
+                    {
+                        if (MainServer.flightPlans[i].FlightNumber == luggage.FlightNumber)
+                        {
+                            gateNumber = MainServer.flightPlans[i].GateNumber;
+                        }
+                    }
+                    Monitor.Enter(MainServer.checkInBuffers[gateNumber].Buffer);//Locking the thread
+
+                    if (MainServer.checkInBuffers[gateNumber].Buffer[MainServer.checkInBufferSize] != null)
+                    {
+                        MainServer.checkInBuffers[gateNumber].Buffer[MainServer.checkInBufferSize] = luggage;
+                        int luggageInBuffer=0;
+                        foreach (var item in MainServer.checkInBuffers[gateNumber].Buffer)
+                        {
+                            if (item!=null)
+                            {
+                                luggageInBuffer++;
+                            }
+                        }
+                        MainServer.outPut.PrintCheckInBufferCapacity(gateNumber, luggageInBuffer);
+                    }
+                    Monitor.Pulse(MainServer.checkInBuffers[gateNumber].Buffer);//Sending signal to LuggageWorker
+                    Monitor.Exit(MainServer.checkInBuffers[gateNumber].Buffer);//Unlocking thread
+                }
+                catch
+                {
+                }
+
             }
 
         }

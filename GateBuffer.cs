@@ -10,14 +10,32 @@ namespace luggageSortingPlant
     {
         #region Fields
 
+        private Luggage[] buffer;
+
         #endregion
+
+
 
         #region Properties
+        public Luggage[] Buffer
+        {
+            get { return buffer; }
+            set { buffer = value; }
+        }
 
         #endregion
 
-        #region Constructors
 
+        #region Constructors
+        public GateBuffer()
+        {
+
+        }
+        //Initializing
+        public GateBuffer(Luggage[] buffer)
+        {
+            this.buffer = buffer;
+        }
         #endregion
 
         #region Methods

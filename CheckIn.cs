@@ -10,6 +10,7 @@ namespace luggageSortingPlant
     {
         #region Fields
         private string workerName;
+        private bool open;
 
 
         #endregion
@@ -20,6 +21,12 @@ namespace luggageSortingPlant
             get { return workerName; }
             set { workerName = value; }
         }
+        public bool Open
+        {
+            get { return open; }
+            set { open = value; }
+        }
+
 
         #endregion
 
@@ -28,9 +35,10 @@ namespace luggageSortingPlant
         {
 
         }
-        public CheckIn(string workerName)
+        public CheckIn(string workerName, bool open)
         {
             this.workerName = workerName;
+            this.open = open;
         }
         #endregion
 

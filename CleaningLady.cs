@@ -55,7 +55,7 @@ namespace luggageSortingPlant
             }
         }
 
-        public void ReorderingCheckInBuffer()
+        public void ReorderingCheckInBuffer(int checkInNumber)
         {
             while (true)
             {
@@ -69,7 +69,7 @@ namespace luggageSortingPlant
             }
         }
 
-        public void ReorderingGateBuffer()
+        public void ReorderingGateBuffer(int gateNumber)
         {
             while (true)
             {

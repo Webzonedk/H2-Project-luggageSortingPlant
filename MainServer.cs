@@ -32,11 +32,11 @@ namespace luggageSortingPlant
         public static FlightPlan[] flightPlans = new FlightPlan[maxPendingFlights];
         public static Luggage[] luggageBuffer = new Luggage[MaxLuggageBuffer];
 
-        public static CheckInBuffer[] checkInBuffers = new CheckInBuffer[checkInBufferSize];
+        public static CheckInBuffer[] checkInBuffers = new CheckInBuffer[amountOfCheckIns];
         public static CheckIn[] checkIns = new CheckIn[amountOfCheckIns];
         public static Thread[] checkInWorkers = new Thread[amountOfCheckIns];
 
-        public static GateBuffer[] gateBuffers = new GateBuffer[gateBufferSize];
+        public static GateBuffer[] gateBuffers = new GateBuffer[amountOfGates];
         public static Gate[] gates = new Gate[amountOfGates];
         public static Thread[] gateWorkers = new Thread[amountOfGates];
 
@@ -44,7 +44,7 @@ namespace luggageSortingPlant
 
 
         //Instantiating Classes
-        public static Luggage luggage = new Luggage();
+      //  public static Luggage luggage = new Luggage();
         public static CleaningLady cleaningLady = new();
         public static OutPut outPut = new OutPut();
 
@@ -122,8 +122,16 @@ namespace luggageSortingPlant
         {
             for (int i = 0; i < amountOfCheckIns; i++)
             {
-                CheckIn checkIn = new CheckIn($"Check in counter {i + 1}");
-                checkIns[i] = checkIn;//Might be problematic
+                CheckIn checkIn = new CheckIn($"Check in counter {i + 1}", false);
+                checkIns[i] = checkIn;
+            }
+        }
+        public void CreateCheckInBuffers()
+        {
+            for (int i = 0; i < amountOfCheckIns; i++)
+            {
+                CheckInBuffer checkIn = new CheckInBuffer();
+                checkInBuffers[i] = checkIn;
             }
         }
 
@@ -131,10 +139,19 @@ namespace luggageSortingPlant
         {
             for (int i = 0; i < amountOfGates; i++)
             {
-                Gate gate = new Gate($"Gate {i}");
-                gates[i] = gate;//Might be problematic
+                Gate gate = new Gate($"Gate {i}", false);
+                gates[i] = gate;
             }
         }
+        public void CreateGateBuffers()
+        {
+            for (int i = 0; i < amountOfGates; i++)
+            {
+                GateBuffer gate = new GateBuffer();
+                gateBuffers[i] = gate;
+            }
+        }
+
 
         public void RunSimulation()
         {
