@@ -15,6 +15,9 @@ namespace luggageSortingPlant
         public static int amountOfGates = 10;//Adjustable from WPF if possible
         public static int maxPendingFlights = 20;//Adjustable from WPF if possible
         public static int MaxLuggageBuffer = 500;
+        public static int checkInBufferSize = 50;
+        public static int gateBufferSize = 50;
+        public static int logSize = 100000;
 
         //Global attributes for use in the Threads
         public static Random random = new Random();
@@ -26,23 +29,24 @@ namespace luggageSortingPlant
         "Oslo, Norge", "Riga, Letland", "Beograd, Serbien" };
         public static int[] numberOfSeats = new int[5] { 150, 200, 250, 300, 350 };
 
-        public static FlightPlan[] flightPlans;
-        public static Luggage[] luggageBuffer;
+        public static FlightPlan[] flightPlans = new FlightPlan[maxPendingFlights];
+        public static Luggage[] luggageBuffer = new Luggage[MaxLuggageBuffer];
 
-        public static CheckInBuffer[] checkInBuffers;
-        public static CheckIn[] checkIns;
-        public static Thread[] checkInWorkers;
+        public static CheckInBuffer[] checkInBuffers = new CheckInBuffer[checkInBufferSize];
+        public static CheckIn[] checkIns = new CheckIn[amountOfCheckIns];
+        public static Thread[] checkInWorkers = new Thread[amountOfCheckIns];
 
-        public static GateBuffer[] gateBuffers;
-        public static Gate[] gates;
-        public static Thread[] gateWorkers;
+        public static GateBuffer[] gateBuffers = new GateBuffer[gateBufferSize];
+        public static Gate[] gates = new Gate[amountOfGates];
+        public static Thread[] gateWorkers = new Thread[amountOfGates];
 
-        public static Luggage[] log;
+        public static Luggage[] log = new Luggage[logSize];
 
 
-        //Initializing Classes
-        public static Luggage luggage = new();
+        //Instantiating Classes
+        public static Luggage luggage = new Luggage();
         public static CleaningLady cleaningLady = new();
+        public static OutPut outPut = new OutPut();
 
         #region Fields
         private string name;
@@ -114,15 +118,34 @@ namespace luggageSortingPlant
 
 
         #region Methods
+        public void CreateCheckIns()
+        {
+            for (int i = 0; i < amountOfCheckIns; i++)
+            {
+                CheckIn checkIn = new CheckIn($"Check in counter {i + 1}");
+                checkIns[i] = checkIn;//Might be problematic
+            }
+        }
+
+        public void CreateGates()
+        {
+            for (int i = 0; i < amountOfGates; i++)
+            {
+                Gate gate = new Gate($"Gate {i}");
+                gates[i] = gate;//Might be problematic
+            }
+        }
+
         public void RunSimulation()
         {
             CurrentTime = DateTime.Now;//Setting the current time
             CheckIn checkIn = new();//Initializing CheckIn 
-            checkIn.CreateCheckIns();//Run the CreateCheckIns method
+            CreateCheckIns();//Run the CreateCheckIns method
+            CreateGates();//Creates the Gates
 
             //Initializing the classes
-            FlightPlan createFlights = new("Flightplanner");
-            Luggage createLuggage = new("LuggageCreater");
+            FlightPlanWorker createFlights = new("FlightplanWorker");
+            LuggageWorker createLuggage = new("LuggageWorker");
             MainEntrance mainEntrance = new("Main Entrance");
 
             //Initializing the workers
@@ -133,15 +156,17 @@ namespace luggageSortingPlant
             for (int i = 0; i < checkIns.Length; i++)
             {
                 Thread checkInWorker = new(checkIns[i].CheckInLuggage);
-                checkInWorkers.Append(checkInWorker);
+                checkInWorkers[i] = checkInWorker;
             }
 
             //Initializing gateWorkers to the gateWorker Array using a loop
             for (int i = 0; i < gates.Length; i++)
             {
                 Thread gateWorker = new(gates[i].Boarding);
-                gateWorkers.Append(gateWorker);
+                gateWorkers[i] = gateWorker;
             }
+
+            //Initializing mainEntranceSPlitter
             Thread mainEntranceSplitter = new(mainEntrance.SendLuggageToCheckIn);
 
 
@@ -168,12 +193,10 @@ namespace luggageSortingPlant
 
             //-------------------------------------------------------------
             //-------------------------------------------------------------
+
+          
+
+            #endregion
         }
-
-
-
-
-
-        #endregion
     }
 }

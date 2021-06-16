@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Bogus;
+
 using System.Threading;
 
 namespace luggageSortingPlant
@@ -11,10 +11,6 @@ namespace luggageSortingPlant
     public class Luggage
     {
         #region Fields
-        private string workerName;
-
-
-
         private int luggageNumber;
         private int passengerNumber;
         private string passengerName;
@@ -30,11 +26,6 @@ namespace luggageSortingPlant
 
 
         #region Properties
-        public string WorkerName
-        {
-            get { return workerName; }
-            set { workerName = value; }
-        }
         public int LuggageNumber
         {
             get { return luggageNumber; }
@@ -84,10 +75,6 @@ namespace luggageSortingPlant
         {
 
         }
-        public Luggage(string workerName)
-        {
-            this.workerName = workerName;
-        }
         public Luggage(int luggageNumber, int passengerNumber, string passengerName, int flightNumber, DateTime checkInTimeStamp, DateTime sortInTimeStmap, DateTime sortOutTimeStamp, DateTime gateArrivalTimeStamp)
         {
             this.luggageNumber = luggageNumber;
@@ -108,43 +95,6 @@ namespace luggageSortingPlant
         #endregion
 
         #region Methods
-        public void CreateLuggage()
-        {
-            int luggageCounter = 1;
-            int paasengerNumber = 1;
-            while (true)
-            {
-                Monitor.Enter(MainServer.luggageBuffer);//Locking the thread
-                for (int i = 0; i < MainServer.luggageBuffer.Length; i++)
-                {
-                    if (MainServer.luggageBuffer[i] == null)
-                    {
-                        Luggage luggage = new Luggage();
-                        luggage.LuggageNumber = luggageCounter;
-                        luggageCounter++;
-                        luggage.PassengerNumber = paasengerNumber;
-                        paasengerNumber++;
-                        Faker passengerName = new Faker();
-                        luggage.PassengerName = passengerName.Name.FullName();
-
-                        int randomFlightNumber = MainServer.random.Next(0, MainServer.maxPendingFlights);
-                        int countLuggage = 0;
-                        for (int j = 0; j < MainServer.luggageBuffer.Length; j++)
-                        {
-                            if (MainServer.luggageBuffer[j].FlightNumber == MainServer.flightPlans[randomFlightNumber].FlightNumber)
-                            {
-                                countLuggage++;
-                            }
-                        }
-                        if (countLuggage < MainServer.flightPlans[randomFlightNumber].Seats)
-                        {
-                            luggage.FlightNumber = randomFlightNumber;
-                            MainServer.luggageBuffer[i] = luggage;
-                        }
-                    }
-                }
-            }
-            #endregion
-        }
+        #endregion
     }
 }

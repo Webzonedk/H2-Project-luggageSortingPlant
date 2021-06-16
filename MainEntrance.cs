@@ -55,7 +55,7 @@ namespace luggageSortingPlant
 
                 if (true)
                 {
-                    Monitor.Enter(MainServer.checkIns[].CheckInLuggage);//Big error........FIX IT NOW!!!!!!!
+                  //  Monitor.Enter(MainServer.checkIns[].CheckInLuggage);//Big error........FIX IT NOW!!!!!!!
 
                 }
             }

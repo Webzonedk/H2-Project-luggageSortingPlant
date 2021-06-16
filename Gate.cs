@@ -46,14 +46,6 @@ namespace luggageSortingPlant
         #endregion
 
         #region Methods
-        public void CreateGates()
-        {
-            for (int i = 0; i < MainServer.amountOfGates; i++)
-            {
-                Gate gate = new Gate($"Gate {i}");
-                MainServer.gates[i]=gate;//Might be problematic
-            }
-        }
 
         public void Boarding()
         {

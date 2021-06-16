@@ -35,15 +35,7 @@ namespace luggageSortingPlant
         #endregion
 
         #region Methods
-        public void CreateCheckIns()
-        {
-            for (int i =0 ; i < MainServer.amountOfCheckIns; i++)
-            {
-                CheckIn checkIn = new CheckIn($"Check in counter {i+1}");
-                MainServer.checkIns[i]=checkIn;//Might be problematic
-            }
-        }
-
+ 
         public void CheckInLuggage()
         {
 

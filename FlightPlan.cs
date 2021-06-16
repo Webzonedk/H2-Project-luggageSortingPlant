@@ -10,7 +10,6 @@ namespace luggageSortingPlant
     public class FlightPlan
     {
         #region Fields
-        private string workerName;
         private int flightNumber;
         private string destination;
         private int seats;
@@ -24,11 +23,6 @@ namespace luggageSortingPlant
 
         #region Properties
 
-        public string WorkerName
-        {
-            get { return workerName; }
-            set { workerName = value; }
-        }
 
         public int FlightNumber
         {
@@ -62,11 +56,7 @@ namespace luggageSortingPlant
         {
 
         }
-        public FlightPlan(string workerName)
-        {
-            this.workerName = workerName;
-        }
-
+        //Initializing
         public FlightPlan(int flightNumber, string destination, int seats, int gateNumber, DateTime departureTime)
         {
             this.flightNumber = flightNumber;
@@ -86,33 +76,6 @@ namespace luggageSortingPlant
         #endregion
 
         #region Methods
-        //Adding flights if the flightbuffer is not full
-        public void AddFlightToFlightPlan()
-        {
-            while (true)
-            {
-                if (MainServer.flightPlans[MainServer.maxPendingFlights] == null)
-                {
-                    int destinationIndex = MainServer.random.Next(0, MainServer.destinations.Length);
-                    int seats = MainServer.random.Next(0, MainServer.numberOfSeats.Length);
-                    FlightPlan flightPlan = new FlightPlan();
-                    flightPlan.FlightNumber++;
-                    flightPlan.Destination = MainServer.destinations[destinationIndex];
-                    flightPlan.Seats = MainServer.numberOfSeats[seats];
-                    flightPlan.GateNumber = MainServer.random.Next(1, MainServer.amountOfGates);
-                    if (MainServer.flightPlans[MainServer.maxPendingFlights - 1] == null)
-                    {
-                        flightPlan.DepartureTime = Program.manager.CurrentTime.AddSeconds(MainServer.random.Next(10, 20));
-                    }
-                    else
-                    {
-                        flightPlan.DepartureTime = MainServer.flightPlans[MainServer.maxPendingFlights - 1].DepartureTime.AddSeconds(MainServer.random.Next(10, 20));
-                    }
-                    MainServer.flightPlans[MainServer.maxPendingFlights] = flightPlan;
-                }
-            }
-        }
-
 
         #endregion
     }
