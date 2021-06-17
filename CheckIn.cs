@@ -95,14 +95,21 @@ namespace luggageSortingPlant
                     }
                     if (Open == true)
                     {
+
                         if (MainServer.checkInBuffers[CheckInNumber].Buffer[0] != null)
                         {
                             luggage = MainServer.checkInBuffers[CheckInNumber].Buffer[0];
                             luggage.CheckInTimeStamp = DateTime.Now;
                             MainServer.outPut.PrintCheckInArrival(luggage);
                             MainServer.checkInBuffers[CheckInNumber].Buffer[0] = null;
-                            MainServer.cleaningLady.ReorderingCheckInBuffer(CheckInNumber);
+
                         }
+                        else
+                        {
+                            Monitor.Wait(MainServer.checkInBuffers[checkInNumber].Buffer);//Setting the thread in waiting state
+                        }
+
+
 
                     }
                 }
@@ -124,7 +131,7 @@ namespace luggageSortingPlant
                         int i;
                         for (i = 0; i < MainServer.sortingUnitBuffer.Buffer.Length;)
                         {
-                            if (MainServer.sortingUnitBuffer.Buffer[i]!=null)
+                            if (MainServer.sortingUnitBuffer.Buffer[i] != null)
                             {
                                 i++;
                             }

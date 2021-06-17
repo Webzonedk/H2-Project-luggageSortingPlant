@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 //-----------------------------------------------------------------------------------------------
 //This class is sorting the Buffers in the same way as a queue.
 //As Mikkel (one of the Teachers), has a complicated relationship with the queues and want us to be able to use arrays
@@ -35,12 +36,26 @@ namespace luggageSortingPlant
         {
             while (true)
             {
-                if (MainServer.flightPlans[0] == null)
+                try
                 {
-                    for (int i = 1; i < MainServer.flightPlans.Length; i++)
+                    Monitor.Enter(MainServer.flightPlans);//Locking the thread
+
+                    if (MainServer.flightPlans[MainServer.maxPendingFlights - 1] != null)
                     {
-                        MainServer.flightPlans[i - 1] = MainServer.flightPlans[i];
+                        for (int i = 1; i < MainServer.flightPlans.Length; i++)
+                        {
+                            MainServer.flightPlans[i - 1] = MainServer.flightPlans[i];
+                        }
                     }
+                    else
+                    {
+                        Monitor.Wait(MainServer.flightPlans);//Setting the thread in waiting state
+                    }
+                }
+                finally
+                {
+                    Monitor.Pulse(MainServer.flightPlans);//Sending signal to other thread
+                    Monitor.Exit(MainServer.flightPlans);//Release the lock
                 }
             }
         }
@@ -64,12 +79,25 @@ namespace luggageSortingPlant
         {
             while (true)
             {
-                if (MainServer.checkInBuffers[checkInNumber].Buffer[0] == null)//If the buffer index 0 is empty
+                try
                 {
-                    for (int i = 1; i < MainServer.checkInBuffers[checkInNumber].Buffer.Length; i++)//Loop through all boxes in the array
+                    Monitor.Enter(MainServer.checkInBuffers[checkInNumber].Buffer);//Locking the thread
+                    if (MainServer.checkInBuffers[checkInNumber].Buffer[MainServer.checkInBufferSize - 1] != null)//If the buffer index 0 is empty
                     {
-                        MainServer.checkInBuffers[checkInNumber].Buffer[i - 1] = MainServer.checkInBuffers[checkInNumber].Buffer[i];//Move all content oft the indexes one down
+                        for (int i = 1; i < MainServer.checkInBuffers[checkInNumber].Buffer.Length; i++)//Loop through all boxes in the array
+                        {
+                            MainServer.checkInBuffers[checkInNumber].Buffer[i - 1] = MainServer.checkInBuffers[checkInNumber].Buffer[i];//Move all content oft the indexes one down
+                        }
                     }
+                    else
+                    {
+                        Monitor.Wait(MainServer.checkInBuffers[checkInNumber].Buffer);//Setting the thread in waiting state
+                    }
+                }
+                finally
+                {
+                    Monitor.Pulse(MainServer.checkInBuffers[checkInNumber].Buffer);//Sending signal to other thread
+                    Monitor.Exit(MainServer.checkInBuffers[checkInNumber].Buffer);//Release the lock
                 }
             }
         }

@@ -53,7 +53,6 @@ namespace luggageSortingPlant
 
         //Instantiating Classes
       //  public static Luggage luggage = new Luggage();
-        public static CleaningLady cleaningLady = new();
         public static OutPut outPut = new OutPut();
 
         #region Fields
@@ -172,11 +171,26 @@ namespace luggageSortingPlant
             FlightPlanWorker createFlights = new("FlightplanWorker");
             LuggageWorker createLuggage = new("LuggageWorker");
             MainEntrance mainEntrance = new("Main Entrance");
+           CleaningLady cleaningLady = new();
 
-            //Initializing the workers
-            Thread flightPlanner = new(createFlights.AddFlightToFlightPlan);
+
+
+        //Initializing the workers
+        Thread flightPlanner = new(createFlights.AddFlightToFlightPlan);
             Thread luggageSpawner = new(createLuggage.CreateLuggage);
 
+            //Initializing mainEntranceSPlitter
+            Thread mainEntranceSplitter = new(mainEntrance.SendLuggageToCheckIn);
+
+            //Initializing the FlightPlanner CleaningLady
+            Thread flightPlanSorter = new(cleaningLady.ReorderingFlightPlan);
+
+            //Initializing checkinBufferSortings to each checkInWorker Array using a loop
+            for (int i = 0; i < checkIns.Length; i++)
+            {
+                Thread checkInWorker = new(checkIns[i].CheckInLuggage);
+                checkInWorkers[i] = checkInWorker;
+            } 
             //Initializing checkinWorkers to the checkInWorker Array using a loop
             for (int i = 0; i < checkIns.Length; i++)
             {
@@ -191,17 +205,19 @@ namespace luggageSortingPlant
                 gateWorkers[i] = gateWorker;
             }
 
-            //Initializing mainEntranceSPlitter
-            Thread mainEntranceSplitter = new(mainEntrance.SendLuggageToCheckIn);
+
 
 
             //-------------------------------------------------------------
             //Starting the threads
             //-------------------------------------------------------------
+            flightPlanSorter.Start();
 
             flightPlanner.Start();
 
             luggageSpawner.Start();
+
+           // mainEntranceSplitter.Start();
 
             //foreach (Thread worker in checkInWorkers)
             //{
@@ -219,7 +235,7 @@ namespace luggageSortingPlant
             //-------------------------------------------------------------
             //-------------------------------------------------------------
 
-          
+
 
             #endregion
         }
