@@ -58,47 +58,57 @@ namespace luggageSortingPlant
                     Monitor.Exit(MainServer.luggageBuffer);//Unlocking thread
                 }
 
+
+                int flightNumber = 0;
                 int checkInNumber = 0;
                 int gateNumber = 0;
                 try
                 {
-                    for (int i = 0; i < MainServer.checkInBuffers.Length; i++)
+
+                    //Check if there is already a buffer in use for the specific flight and if thats the case, insert luggae object in that buffer
+                    for (int i = 0; i < MainServer.checkInBuffers.Length; i++)//Run throught all the buffers in the array
                     {
+                        checkInNumber = i;
+                    Monitor.Enter(MainServer.checkInBuffers[checkInNumber].Buffer);//Locking the thread
                         int j;
-                        for (j = 0; j < MainServer.checkInBuffers[i].Buffer.Length; )
+                        for (j = 0; j < MainServer.checkInBuffers[i].Buffer.Length;)//loop through the current Buffer
                         {
-                            if (MainServer.checkInBuffers[i].Buffer[j] != null)
+                            if (MainServer.checkInBuffers[i].Buffer[j] != null)//Count empty spaces in buffer and check the flightNumber of the luggae in the buffer
                             {
                                 j++;
+                                flightNumber = MainServer.checkInBuffers[i].Buffer[j].FlightNumber;//Select the flightNumber in current buffer
                             }
                         }
-                        if (j < MainServer.checkInBuffers[i].Buffer.Length - 1)
+                        //If buffer is not full and If Luggage flightnumber is = flightNumber in the buffer
+                        //Then insert the luggage to the last placr in the buffer, and empty the luggage object
+                        if ((j < MainServer.checkInBuffers[i].Buffer.Length - 1) && (luggage.FlightNumber == flightNumber))
                         {
-
+                            MainServer.checkInBuffers[i].Buffer[MainServer.checkInBufferSize - 1] = luggage;
+                            luggage = null;
                         }
                     }
 
-                    for (int i = 0; i < MainServer.flightPlans.Length; i++)
+                    //If luggage object is still not null after first check, then 
+                    if (luggage != null)
                     {
-                        if (MainServer.flightPlans[i].FlightNumber == luggage.FlightNumber)
+                        for (int i = 0; i < MainServer.checkInBuffers.Length; i++)
                         {
-                            gateNumber = MainServer.flightPlans[i].GateNumber;
-                        }
-                    }
-                    Monitor.Enter(MainServer.checkInBuffers[gateNumber].Buffer);//Locking the thread
+                            checkInNumber = i;
+                            Monitor.Enter(MainServer.checkInBuffers[checkInNumber].Buffer);//Locking the thread
 
-                    if (MainServer.checkInBuffers[gateNumber].Buffer[MainServer.checkInBufferSize] != null)
-                    {
-                        MainServer.checkInBuffers[gateNumber].Buffer[MainServer.checkInBufferSize] = luggage;
-                        int luggageInBuffer = 0;
-                        foreach (var item in MainServer.checkInBuffers[gateNumber].Buffer)
-                        {
-                            if (item != null)
+                            int k;
+                            for (k = 0; k < MainServer.checkInBuffers[i].Buffer.Length;)//loop through the current Buffer
                             {
-                                luggageInBuffer++;
+                                if (MainServer.checkInBuffers[i].Buffer[k] != null)//Count empty spaces in buffer and check the flightNumber of the luggae in the buffer
+                                {
+                                    k++;
+                                }
+                            }
+                            if (k == 0)
+                            {
+                                MainServer.checkInBuffers[i].Buffer[MainServer.checkInBufferSize - 1] = luggage;
                             }
                         }
-                        MainServer.outPut.PrintCheckInBufferCapacity(gateNumber, luggageInBuffer);
                     }
                 }
                 finally
@@ -106,6 +116,33 @@ namespace luggageSortingPlant
                     Monitor.Pulse(MainServer.checkInBuffers[gateNumber].Buffer);//Sending signal to LuggageWorker
                     Monitor.Exit(MainServer.checkInBuffers[gateNumber].Buffer);//Unlocking thread
                 }
+
+
+
+                //for (int i = 0; i < MainServer.flightPlans.Length; i++)
+                //{
+                //    if (MainServer.flightPlans[i].FlightNumber == luggage.FlightNumber)
+                //    {
+                //        gateNumber = MainServer.flightPlans[i].GateNumber;
+                //    }
+                //}
+                //Monitor.Enter(MainServer.checkInBuffers[gateNumber].Buffer);//Locking the thread
+
+                //if (MainServer.checkInBuffers[gateNumber].Buffer[MainServer.checkInBufferSize] != null)
+                //{
+                //    MainServer.checkInBuffers[gateNumber].Buffer[MainServer.checkInBufferSize] = luggage;
+                //    int luggageInBuffer = 0;
+                //    foreach (var item in MainServer.checkInBuffers[gateNumber].Buffer)
+                //    {
+                //        if (item != null)
+                //        {
+                //            luggageInBuffer++;
+                //        }
+                //    }
+                //    MainServer.outPut.PrintCheckInBufferCapacity(gateNumber, luggageInBuffer);
+                //}
+
+
 
 
 
