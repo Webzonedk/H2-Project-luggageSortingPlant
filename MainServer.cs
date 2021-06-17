@@ -122,7 +122,7 @@ namespace luggageSortingPlant
         {
             for (int i = 0; i < amountOfCheckIns; i++)
             {
-                CheckIn checkIn = new CheckIn($"Check in counter {i + 1}", false);
+                CheckIn checkIn = new CheckIn($"Check in counter {i + 1}", false, i);
                 checkIns[i] = checkIn;
             }
         }

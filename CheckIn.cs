@@ -11,9 +11,11 @@ namespace luggageSortingPlant
         #region Fields
         private string workerName;
         private bool open;
-
+        private int checkInNumber;
 
         #endregion
+
+
 
         #region Properties
         public string WorkerName
@@ -26,19 +28,25 @@ namespace luggageSortingPlant
             get { return open; }
             set { open = value; }
         }
-
-
+        public int CheckInNumber
+        {
+            get { return checkInNumber; }
+            set { checkInNumber = value; }
+        }
         #endregion
+
+
 
         #region Constructors
         public CheckIn()
         {
 
         }
-        public CheckIn(string workerName, bool open)
+        public CheckIn(string workerName, bool open, int checkInNumber)
         {
             this.workerName = workerName;
             this.open = open;
+            this.checkInNumber = checkInNumber;
         }
         #endregion
 
@@ -46,7 +54,17 @@ namespace luggageSortingPlant
  
         public void CheckInLuggage()
         {
+            while (true)
+            {
+                for (int i = 0; i < MainServer.checkInBuffers[i].; i++)
+                {
 
+                }
+                if (MainServer.checkInBuffers[i] MainServer.flightPlans.)
+                {
+
+                }
+            }
         }
         #endregion
     }

@@ -11,10 +11,6 @@ namespace luggageSortingPlant
         #region Fields
         private string workerName;
         private bool open;
-
-
-
-
         private int gateNumber;
 
         #endregion
@@ -31,8 +27,6 @@ namespace luggageSortingPlant
             set { open = value; }
         }
 
-
-
         public int GateNumber
         {
             get { return gateNumber; }
@@ -47,10 +41,11 @@ namespace luggageSortingPlant
         {
 
         }
-        public Gate(string workerName, bool open)
+        public Gate(string workerName, bool open, int gateNumber)
         {
             this.workerName = workerName;
             this.open = open;
+            this.gateNumber = gateNumber;
         }
         #endregion
 
