@@ -30,7 +30,7 @@ namespace luggageSortingPlant
         {
 
         }
-        //Initializing
+        //Instantiating
         public CheckInBuffer(Luggage[] buffer)
         {
             this.buffer = buffer;

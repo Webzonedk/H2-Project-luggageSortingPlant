@@ -32,6 +32,8 @@ namespace luggageSortingPlant
         }
         #endregion
 
+
+
         #region Methods
         public void SendLuggageToCheckIn()
         {
@@ -51,6 +53,7 @@ namespace luggageSortingPlant
                         MainServer.luggageBuffer[0] = null;
                         MainServer.cleaningLady.ReorderingLuggageBuffer();
                     }
+                    MainServer.outPut.PrintArrivedToTheAirport(luggage);
                 }
                 finally
                 {
@@ -61,7 +64,7 @@ namespace luggageSortingPlant
 
                 int flightNumber = 0;
                 int checkInNumber = 0;
-                int gateNumber = 0;
+                // int gateNumber = 0;
                 try
                 {
 
@@ -69,11 +72,11 @@ namespace luggageSortingPlant
                     for (int i = 0; i < MainServer.checkInBuffers.Length; i++)//Run throught all the buffers in the array
                     {
                         checkInNumber = i;
-                    Monitor.Enter(MainServer.checkInBuffers[checkInNumber].Buffer);//Locking the thread
+                        Monitor.Enter(MainServer.checkInBuffers[checkInNumber].Buffer);//Locking the thread
                         int j;
                         for (j = 0; j < MainServer.checkInBuffers[i].Buffer.Length;)//loop through the current Buffer
                         {
-                            if (MainServer.checkInBuffers[i].Buffer[j] != null)//Count empty spaces in buffer and check the flightNumber of the luggae in the buffer
+                            if (MainServer.checkInBuffers[i].Buffer[j] != null)//Count luggage in current buffer and check the flightNumber of the luggae as well
                             {
                                 j++;
                                 flightNumber = MainServer.checkInBuffers[i].Buffer[j].FlightNumber;//Select the flightNumber in current buffer
@@ -84,6 +87,7 @@ namespace luggageSortingPlant
                         if ((j < MainServer.checkInBuffers[i].Buffer.Length - 1) && (luggage.FlightNumber == flightNumber))
                         {
                             MainServer.checkInBuffers[i].Buffer[MainServer.checkInBufferSize - 1] = luggage;
+                            MainServer.outPut.PrintCheckInBufferCapacity(checkInNumber, j);
                             luggage = null;
                         }
                     }
@@ -106,15 +110,18 @@ namespace luggageSortingPlant
                             }
                             if (k == 0)
                             {
-                                MainServer.checkInBuffers[i].Buffer[MainServer.checkInBufferSize - 1] = luggage;
+                                MainServer.checkInBuffers[i].Buffer[MainServer.checkInBufferSize - 1] = luggage;//Adding the luggage to the buffer
+                                MainServer.outPut.PrintCheckInBufferCapacity(checkInNumber, 1);//Printing to console
+
+                                luggage = null;
                             }
                         }
                     }
                 }
                 finally
                 {
-                    Monitor.Pulse(MainServer.checkInBuffers[gateNumber].Buffer);//Sending signal to LuggageWorker
-                    Monitor.Exit(MainServer.checkInBuffers[gateNumber].Buffer);//Unlocking thread
+                    Monitor.Pulse(MainServer.checkInBuffers[checkInNumber].Buffer);//Sending signal to LuggageWorker
+                    Monitor.Exit(MainServer.checkInBuffers[checkInNumber].Buffer);//Unlocking thread
                 }
 
 

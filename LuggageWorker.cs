@@ -104,12 +104,12 @@ namespace luggageSortingPlant
                             }
                         }
                     }
+                }
+                finally
+                {
                     Monitor.Pulse(MainServer.luggageBuffer);//Sending signal to other thread
                     Monitor.Exit(MainServer.luggageBuffer);//Release the lock
-                }
-                catch
-                {
-                    throw;
+                 
                 }
             }
 

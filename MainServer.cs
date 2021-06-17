@@ -16,8 +16,14 @@ namespace luggageSortingPlant
         public static int maxPendingFlights = 20;//Adjustable from WPF if possible
         public static int MaxLuggageBuffer = 8000;
         public static int checkInBufferSize = 50;
+        public static int sortBufferSize = 500;
+
         public static int gateBufferSize = 50;
         public static int logSize = 2000000;
+        public static int flightPlanMinInterval = 10;
+        public static int flightPlanMaxInterval = 30;
+        public static int checkInOpenBeforeDeparture = 20;
+        public static int gateOpenBeforeDeparture = 10;
 
         //Global attributes for use in the Threads
         public static Random random = new Random();
@@ -35,6 +41,8 @@ namespace luggageSortingPlant
         public static CheckInBuffer[] checkInBuffers = new CheckInBuffer[amountOfCheckIns];
         public static CheckIn[] checkIns = new CheckIn[amountOfCheckIns];
         public static Thread[] checkInWorkers = new Thread[amountOfCheckIns];
+
+        public static SortingUnitBuffer sortingUnitBuffer = new SortingUnitBuffer();
 
         public static GateBuffer[] gateBuffers = new GateBuffer[amountOfGates];
         public static Gate[] gates = new Gate[amountOfGates];
@@ -139,7 +147,7 @@ namespace luggageSortingPlant
         {
             for (int i = 0; i < amountOfGates; i++)
             {
-                Gate gate = new Gate($"Gate {i}", false);
+                Gate gate = new Gate($"Gate {i}", false, i);
                 gates[i] = gate;
             }
         }

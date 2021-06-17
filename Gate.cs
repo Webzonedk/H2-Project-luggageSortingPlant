@@ -12,6 +12,7 @@ namespace luggageSortingPlant
         private string workerName;
         private bool open;
         private int gateNumber;
+        private Luggage[] buffer;
 
         #endregion
 
@@ -31,6 +32,11 @@ namespace luggageSortingPlant
         {
             get { return gateNumber; }
             set { gateNumber = value; }
+        }
+        public Luggage[] Buffer
+        {
+            get { return buffer; }
+            set { buffer = value; }
         }
 
 
