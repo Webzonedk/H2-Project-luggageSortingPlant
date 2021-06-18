@@ -9,6 +9,24 @@ namespace luggageSortingPlant
 {
     class LuggageQueueWorker
     {
+        #region Fields
+
+        #endregion
+
+        #region Properties
+
+        #endregion
+
+        #region Constructors
+        public LuggageQueueWorker()
+        {
+
+        }
+        #endregion
+
+        #region Methods
+
+        #endregion
         public void ReorderingLuggageBuffer()//Reordering the LuggageBuffer to work as a queue with first in first out.
         {
             while (true)
@@ -29,7 +47,7 @@ namespace luggageSortingPlant
                             {
                                 MainServer.luggageBuffer[i - 1] = MainServer.luggageBuffer[i];
                             }
-
+                            MainServer.luggageBuffer[MainServer.MaxLuggageBuffer - 1] = null;
                         }
                     }
                 }

@@ -237,12 +237,12 @@ namespace luggageSortingPlant
 
             luggageSorter.Start();
 
-            mainEntranceSplitter.Start();
+            //mainEntranceSplitter.Start();
 
-            foreach (Thread worker in checkInBufferWorkers)
-            {
-                worker.Start();
-            }
+            //foreach (Thread worker in checkInBufferWorkers)
+            //{
+            //    worker.Start();
+            //}
 
             //foreach (Thread worker in checkInWorkers)
             //{

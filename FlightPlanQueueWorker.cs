@@ -18,7 +18,10 @@ namespace luggageSortingPlant
         #endregion
 
         #region Constructors
+        public FlightPlanQueueWorker()
+        {
 
+        }
         #endregion
 
         #region Methods
@@ -43,6 +46,7 @@ namespace luggageSortingPlant
 
                                 MainServer.flightPlans[i - 1] = MainServer.flightPlans[i];
                             }
+                            MainServer.flightPlans[MainServer.maxPendingFlights - 1] = null;
                         }
                     }
                 }
