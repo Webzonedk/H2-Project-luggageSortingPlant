@@ -42,6 +42,7 @@ namespace luggageSortingPlant
             {
                 try
                 {
+                    
                     Monitor.Enter(MainServer.flightPlans);//Locking the thread
 
                     if (MainServer.flightPlans[MainServer.maxPendingFlights - 1] == null)

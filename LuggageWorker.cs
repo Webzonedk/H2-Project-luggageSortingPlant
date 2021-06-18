@@ -51,65 +51,63 @@ namespace luggageSortingPlant
 
                 try
                 {
-                Monitor.Enter(MainServer.luggageBuffer);//Locking the thread
+                    Monitor.Enter(MainServer.luggageBuffer);//Locking the thread
 
-                    for (int i = 0; i < MainServer.luggageBuffer.Length; i++)
+
+
+                    if (MainServer.luggageBuffer[MainServer.MaxLuggageBuffer - 1] == null)
                     {
-
-
-                        if (MainServer.luggageBuffer[i] == null)
+                        //Added a check to ensure that the randomMax will not exceed the amount og flights in the flightplan
+                        int randomMax;
+                        for (randomMax = 0; randomMax < MainServer.flightPlans.Length;)
                         {
-                            //Added a check to ensure that the randomMax will not exceed the amount og flights in the flightplan
-                            int randomMax;
-                            for (randomMax = 0; randomMax < MainServer.flightPlans.Length;)
+                            if (MainServer.flightPlans[randomMax] != null)
                             {
-                                if (MainServer.flightPlans[randomMax] != null)
-                                {
-                                    randomMax++;
-                                }
-                                else
-                                {
-                                    break;
-                                }
+                                randomMax++;
                             }
-
-                            int randomFlightNumber = MainServer.random.Next(0, randomMax);
-                            int countLuggage = 0;
-                            //if (MainServer.luggageBuffer[0] != null)
-                            //{
-                            for (int j = 0; j < MainServer.luggageBuffer.Length; j++)
+                            else
                             {
-                                if ((MainServer.luggageBuffer[j] != null) && (MainServer.luggageBuffer[j].FlightNumber == MainServer.flightPlans[randomFlightNumber].FlightNumber))
-                                {
-                                    countLuggage++;
-                                }
+                                break;
                             }
+                        }
 
-                            //}
-                            if ((MainServer.flightPlans[randomFlightNumber] != null) && (countLuggage < MainServer.flightPlans[randomFlightNumber].Seats))
+                        int randomFlightNumber = MainServer.random.Next(0, randomMax);
+                        int countLuggage = 0;
+                        //if (MainServer.luggageBuffer[0] != null)
+                        //{
+                        for (int j = 0; j < MainServer.luggageBuffer.Length; j++)
+                        {
+                            if ((MainServer.luggageBuffer[j] != null) && (MainServer.luggageBuffer[j].FlightNumber == MainServer.flightPlans[randomFlightNumber].FlightNumber))
                             {
-                                Luggage luggage = new Luggage();
-                                luggage.LuggageNumber = luggageCounter;
-                                luggageCounter++;
-                                luggage.PassengerNumber = paasengerNumber;
-                                paasengerNumber++;
-                                Faker passengerName = new Faker();
-                                luggage.PassengerName = passengerName.Name.FullName();
-
-                                luggage.FlightNumber = randomFlightNumber;
-                                MainServer.luggageBuffer[i] = luggage;
-                                MainServer.outPut.PrintLuggage(i);
-                                i = MainServer.luggageBuffer.Length;
-                                
+                                countLuggage++;
                             }
+                        }
+
+                        //}
+                        if ((MainServer.flightPlans[randomFlightNumber] != null) && (countLuggage < MainServer.flightPlans[randomFlightNumber].Seats))
+                        {
+                            Luggage luggage = new Luggage();
+                            luggage.LuggageNumber = luggageCounter;
+                            luggageCounter++;
+                            luggage.PassengerNumber = paasengerNumber;
+                            paasengerNumber++;
+                            Faker passengerName = new Faker();
+                            luggage.PassengerName = passengerName.Name.FullName();
+
+                            luggage.FlightNumber = randomFlightNumber;
+                            MainServer.luggageBuffer[MainServer.MaxLuggageBuffer - 1] = luggage;
+                            MainServer.outPut.PrintLuggage(MainServer.MaxLuggageBuffer - 1);
+                            //i = MainServer.luggageBuffer.Length;
+
                         }
                     }
                 }
+
                 finally
                 {
                     Monitor.Pulse(MainServer.luggageBuffer);//Sending signal to other thread
                     Monitor.Exit(MainServer.luggageBuffer);//Release the lock
-                 
+
                 }
             }
 

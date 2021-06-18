@@ -32,48 +32,48 @@ namespace luggageSortingPlant
         #endregion
 
         #region Methods
-        public void ReorderingFlightPlan()//Reordering the flightplanbuffer to work as a queue with first in first out.
-        {
-            while (true)
-            {
-                try
-                {
-                    Monitor.Enter(MainServer.flightPlans);//Locking the thread
+        //public void ReorderingFlightPlan()//Reordering the flightplanbuffer to work as a queue with first in first out.
+        //{
+        //    while (true)
+        //    {
+        //        try
+        //        {
+        //            Monitor.Enter(MainServer.flightPlans);//Locking the thread
 
-                    if (MainServer.flightPlans[MainServer.maxPendingFlights - 1] != null)
-                    {
-                        for (int i = 1; i < MainServer.flightPlans.Length; i++)
-                        {
-                            MainServer.flightPlans[i - 1] = MainServer.flightPlans[i];
-                        }
-                    }
-                    else
-                    {
-                        Monitor.Wait(MainServer.flightPlans);//Setting the thread in waiting state
-                    }
-                }
-                finally
-                {
-                    Monitor.Pulse(MainServer.flightPlans);//Sending signal to other thread
-                    Monitor.Exit(MainServer.flightPlans);//Release the lock
-                }
-            }
-        }
+        //            if (MainServer.flightPlans[MainServer.maxPendingFlights - 1] != null)
+        //            {
+        //                for (int i = 1; i < MainServer.flightPlans.Length; i++)
+        //                {
+        //                    MainServer.flightPlans[i - 1] = MainServer.flightPlans[i];
+        //                }
+        //            }
+        //            else
+        //            {
+        //                Monitor.Wait(MainServer.flightPlans);//Setting the thread in waiting state
+        //            }
+        //        }
+        //        finally
+        //        {
+        //            Monitor.Pulse(MainServer.flightPlans);//Sending signal to other thread
+        //            Monitor.Exit(MainServer.flightPlans);//Release the lock
+        //        }
+        //    }
+        //}
 
 
-        public void ReorderingLuggageBuffer()//Reordering the LuggageBuffer to work as a queue with first in first out.
-        {
-            while (true)
-            {
-                if (MainServer.luggageBuffer[0] == null)
-                {
-                    for (int i = 1; i < MainServer.luggageBuffer.Length; i++)
-                    {
-                        MainServer.luggageBuffer[i - 1] = MainServer.luggageBuffer[i];
-                    }
-                }
-            }
-        }
+        //public void ReorderingLuggageBuffer()//Reordering the LuggageBuffer to work as a queue with first in first out.
+        //{
+        //    while (true)
+        //    {
+        //        if (MainServer.luggageBuffer[0] == null)
+        //        {
+        //            for (int i = 1; i < MainServer.luggageBuffer.Length; i++)
+        //            {
+        //                MainServer.luggageBuffer[i - 1] = MainServer.luggageBuffer[i];
+        //            }
+        //        }
+        //    }
+        //}
 
        
 

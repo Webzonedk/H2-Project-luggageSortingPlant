@@ -14,7 +14,7 @@ namespace luggageSortingPlant
 
 
 
-        private Luggage[] buffer;
+        private Luggage[] buffer = new Luggage[MainServer.checkInBufferSize];
 
         #endregion
 
@@ -58,8 +58,12 @@ namespace luggageSortingPlant
             {
                 try
                 {
-                    Monitor.Enter(MainServer.checkInBuffers[checkInNumber].Buffer);//Locking the thread
-                    if (MainServer.checkInBuffers[checkInNumber].Buffer[MainServer.checkInBufferSize - 1] != null)//If the buffer index 0 is empty
+                    Monitor.Enter(MainServer.checkInBuffers[checkInNumber]);//Locking the thread
+                    if (MainServer.checkInBuffers[checkInNumber].Buffer[MainServer.checkInBufferSize - 1] == null)//If the buffer index 0 is empty
+                    {
+                        Monitor.Wait(MainServer.checkInBuffers[checkInNumber]);//Setting the thread in waiting state
+                    }
+                    else
                     {
                         for (int i = 1; i < MainServer.checkInBuffers[checkInNumber].Buffer.Length; i++)//Loop through all boxes in the array
                         {
@@ -67,15 +71,11 @@ namespace luggageSortingPlant
                         }
                             MainServer.outPut.PrintCheckInBufferWorkerOutput(checkInNumber);
                     }
-                    else
-                    {
-                        Monitor.Wait(MainServer.checkInBuffers[checkInNumber].Buffer);//Setting the thread in waiting state
-                    }
                 }
                 finally
                 {
-                    Monitor.Pulse(MainServer.checkInBuffers[checkInNumber].Buffer);//Sending signal to other thread
-                    Monitor.Exit(MainServer.checkInBuffers[checkInNumber].Buffer);//Release the lock
+                    Monitor.Pulse(MainServer.checkInBuffers[checkInNumber]);//Sending signal to other thread
+                    Monitor.Exit(MainServer.checkInBuffers[checkInNumber]);//Release the lock
                 }
             }
         }
