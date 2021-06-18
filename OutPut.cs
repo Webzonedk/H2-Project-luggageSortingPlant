@@ -64,6 +64,13 @@ namespace luggageSortingPlant
             Console.ResetColor();
         }
 
+        public void PrintCheckInBufferWorkerOutput(int checkInNumber)
+        {
+            Console.BackgroundColor = ConsoleColor.Red;
+            Console.WriteLine($"Reordered CheckIn buffer {checkInNumber}");
+            Console.ResetColor();
+        }
+
         public void PrintCheckInArrival(Luggage luggage) //Printing when luggage arrives to checkin
         {
             Console.BackgroundColor = ConsoleColor.Green;

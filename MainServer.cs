@@ -15,7 +15,7 @@ namespace luggageSortingPlant
         public static int amountOfGates = 10;//Adjustable from WPF if possible
         public static int maxPendingFlights = 20;//Adjustable from WPF if possible
         public static int MaxLuggageBuffer = 8000;
-        public static int checkInBufferSize = 50;
+        public static int checkInBufferSize = 500;
         public static int sortBufferSize = 500;
 
         public static int gateBufferSize = 50;
@@ -39,7 +39,7 @@ namespace luggageSortingPlant
         public static Luggage[] luggageBuffer = new Luggage[MaxLuggageBuffer];
 
         public static CheckInBuffer[] checkInBuffers = new CheckInBuffer[amountOfCheckIns];
-        public static Thread[] checkInBufferReorderingWorkers = new Thread[amountOfCheckIns];
+        public static Thread[] checkInBufferWorkers = new Thread[amountOfCheckIns];
         public static CheckIn[] checkIns = new CheckIn[amountOfCheckIns];
         public static Thread[] checkInWorkers = new Thread[amountOfCheckIns];
 
@@ -56,6 +56,7 @@ namespace luggageSortingPlant
         //Instantiating Classes
         //  public static Luggage luggage = new Luggage();
         public static OutPut outPut = new OutPut();
+        public static CleaningLady cleaningLady = new CleaningLady();
 
         #region Fields
         private string name;
@@ -139,16 +140,8 @@ namespace luggageSortingPlant
         {
             for (int i = 0; i < amountOfCheckIns; i++)
             {
-                CheckInBuffer checkIn = new CheckInBuffer();
+                CheckInBuffer checkIn = new CheckInBuffer(i);
                 checkInBuffers[i] = checkIn;
-            }
-        }
-        public void CreateCheckInBufferReorderingWorkers()
-        {
-            for (int i = 0; i < amountOfCheckIns; i++)
-            {
-                CheckInBufferReorderngWorker checkInBufferReorderngWorker = new CheckInBufferReorderngWorker();
-                checkInBufferReorderingWorkers[i] = checkInBufferReorderngWorker;
             }
         }
 
@@ -173,8 +166,10 @@ namespace luggageSortingPlant
         public void RunSimulation()
         {
             CurrentTime = DateTime.Now;//Setting the current time
-            CheckIn checkIn = new();//Initializing CheckIn 
+                                       // CheckIn checkIn = new();//Initializing CheckIn 
+
             CreateCheckIns();//Run the CreateCheckIns method
+            CreateCheckInBuffers();
             CreateGates();//Creates the Gates
 
             //Initializing the classes
@@ -195,11 +190,11 @@ namespace luggageSortingPlant
             //Initializing the FlightPlanner CleaningLady
             Thread flightPlanSorter = new(cleaningLady.ReorderingFlightPlan);
 
-            //Initializing checkinBufferSortings to each checkInWorker Array using a loop
-            for (int i = 0; i < checkIns.Length; i++)
+            //Initializing checkInBufferSortings to each checkInWorker Array using a loop
+            for (int i = 0; i < checkInBufferWorkers.Length; i++)
             {
-                Thread checkInWorker = new(checkIns[i].CheckInLuggage);
-                checkInWorkers[i] = checkInWorker;
+                Thread checkInBufferWorker = new(checkInBuffers[i].ReorderingCheckInBuffer);
+                checkInBufferWorkers[i] = checkInBufferWorker;
             }
             //Initializing checkinWorkers to the checkInWorker Array using a loop
             for (int i = 0; i < checkIns.Length; i++)
@@ -227,12 +222,17 @@ namespace luggageSortingPlant
 
             luggageSpawner.Start();
 
-            // mainEntranceSplitter.Start();
+            mainEntranceSplitter.Start();
+
+            foreach (Thread worker in checkInBufferWorkers)
+            {
+                worker.Start();
+            }
 
             //foreach (Thread worker in checkInWorkers)
             //{
             //    worker.Start();
-            //} 
+            //}
 
             //foreach (Thread worker in gateWorkers)
             //{
