@@ -77,7 +77,7 @@ namespace luggageSortingPlant
                 }
                 finally
                 {
-                    Monitor.Pulse(MainServer.flightPlans);//Sending signal to other thread
+                    Monitor.PulseAll(MainServer.flightPlans);//Sending signal to other thread
                     Monitor.Exit(MainServer.flightPlans);//Release the lock
                 }
 
@@ -115,7 +115,7 @@ namespace luggageSortingPlant
                 }
                 finally
                 {
-                    Monitor.Pulse(MainServer.checkInBuffers[CheckInNumber].Buffer);//Sending signal to other thread
+                    Monitor.PulseAll(MainServer.checkInBuffers[CheckInNumber].Buffer);//Sending signal to other thread
                     Monitor.Exit(MainServer.checkInBuffers[CheckInNumber].Buffer);//Release the lock
 
                 }
@@ -145,7 +145,7 @@ namespace luggageSortingPlant
                 }
                 finally
                 {
-                    Monitor.Pulse(MainServer.sortingUnitBuffer);//Sending signal to other thread
+                    Monitor.PulseAll(MainServer.sortingUnitBuffer);//Sending signal to other thread
                     Monitor.Exit(MainServer.sortingUnitBuffer);//Release the lock
                 }
 

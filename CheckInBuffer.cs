@@ -38,16 +38,13 @@ namespace luggageSortingPlant
         public CheckInBuffer()
         {
 
-        }     
+        }
         public CheckInBuffer(int checkInNumber)
         {
             this.checkInNumber = checkInNumber;
         }
         //Instantiating
-        public CheckInBuffer(Luggage[] buffer)
-        {
-            this.buffer = buffer;
-        }
+
 
         #endregion
 
@@ -58,24 +55,32 @@ namespace luggageSortingPlant
             {
                 try
                 {
-                    Monitor.Enter(MainServer.checkInBuffers[checkInNumber]);//Locking the thread
-                    if (MainServer.checkInBuffers[checkInNumber].Buffer[MainServer.checkInBufferSize - 1] == null)//If the buffer index 0 is empty
+                    Monitor.Enter(MainServer.checkInBuffers[CheckInNumber]);//Locking the thread
+
+                    if (MainServer.checkInBuffers[CheckInNumber].Buffer[MainServer.checkInBufferSize - 1] == null)//If the last buffer index is empty
                     {
-                        Monitor.Wait(MainServer.checkInBuffers[checkInNumber]);//Setting the thread in waiting state
+                        Monitor.Wait(MainServer.checkInBuffers[CheckInNumber]);//Setting the thread in waiting state
                     }
                     else
                     {
-                        for (int i = 1; i < MainServer.checkInBuffers[checkInNumber].Buffer.Length; i++)//Loop through all boxes in the array
+                        if (MainServer.checkInBuffers[CheckInNumber].Buffer[0] == null)//If the first buffer index is empty
                         {
-                            MainServer.checkInBuffers[checkInNumber].Buffer[i - 1] = MainServer.checkInBuffers[checkInNumber].Buffer[i];//Move all content oft the indexes one down
+
+                            for (int i = 1; i < MainServer.checkInBuffers[CheckInNumber].Buffer.Length; i++)//Loop through all boxes in the array
+                            {
+                                MainServer.checkInBuffers[CheckInNumber].Buffer[i - 1] = MainServer.checkInBuffers[CheckInNumber].Buffer[i];//Move all content oft the indexes one down
+                            }
+                            MainServer.checkInBuffers[CheckInNumber].Buffer[MainServer.checkInBufferSize - 1] = null;//Setting the last index to null
+                            MainServer.outPut.PrintCheckInBufferWorkerOutput(CheckInNumber);
                         }
-                            MainServer.outPut.PrintCheckInBufferWorkerOutput(checkInNumber);
                     }
                 }
                 finally
                 {
-                    Monitor.Pulse(MainServer.checkInBuffers[checkInNumber]);//Sending signal to other thread
-                    Monitor.Exit(MainServer.checkInBuffers[checkInNumber]);//Release the lock
+                    Monitor.PulseAll(MainServer.checkInBuffers[CheckInNumber]);//Sending signal to other thread
+                    Monitor.Exit(MainServer.checkInBuffers[CheckInNumber]);//Release the lock
+                    int randomSleep = MainServer.random.Next(MainServer.randomSleepMin, MainServer.randomSleepMax);
+                    Thread.Sleep(randomSleep);
                 }
             }
         }

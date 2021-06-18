@@ -33,11 +33,7 @@ namespace luggageSortingPlant
                 {
                     Monitor.Enter(MainServer.flightPlans);//Locking the thread
 
-                    if (MainServer.flightPlans[MainServer.maxPendingFlights - 1] == null)
-                    {
-                        Monitor.Wait(MainServer.flightPlans);//Setting the thread in waiting state
-                    }
-                    else
+                    if (MainServer.flightPlans[MainServer.maxPendingFlights - 1] != null)
                     {
                         if (MainServer.flightPlans[0] == null)
                         {
@@ -49,11 +45,17 @@ namespace luggageSortingPlant
                             MainServer.flightPlans[MainServer.maxPendingFlights - 1] = null;
                         }
                     }
+                    else
+                    {
+                        Monitor.Wait(MainServer.flightPlans);//Setting the thread in waiting state
+                    }
                 }
                 finally
                 {
-                    Monitor.Pulse(MainServer.flightPlans);//Sending signal to other thread
+                    Monitor.PulseAll(MainServer.flightPlans);//Sending signal to other thread
                     Monitor.Exit(MainServer.flightPlans);//Release the lock
+                    int randomSleep = MainServer.random.Next(MainServer.randomSleepMin, MainServer.randomSleepMax);
+                    Thread.Sleep(randomSleep);
                 }
             }
         }

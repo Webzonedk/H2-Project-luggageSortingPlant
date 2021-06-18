@@ -35,11 +35,7 @@ namespace luggageSortingPlant
                 {
                     Monitor.Enter(MainServer.luggageBuffer);//Locking the thread
 
-                    if (MainServer.luggageBuffer[MainServer.MaxLuggageBuffer - 1] == null)
-                    {
-                        Monitor.Wait(MainServer.luggageBuffer);//Setting the thread in waiting state
-                    }
-                    else
+                    if (MainServer.luggageBuffer[MainServer.MaxLuggageBuffer - 1] != null)
                     {
                         if (MainServer.luggageBuffer[0] == null)
                         {
@@ -50,10 +46,14 @@ namespace luggageSortingPlant
                             MainServer.luggageBuffer[MainServer.MaxLuggageBuffer - 1] = null;
                         }
                     }
+                    else
+                    {
+                        Monitor.Wait(MainServer.luggageBuffer);//Setting the thread in waiting state
+                    }
                 }
                 finally
                 {
-                    Monitor.Pulse(MainServer.luggageBuffer);//Sending signal to other thread
+                    Monitor.PulseAll(MainServer.luggageBuffer);//Sending signal to other thread
                     Monitor.Exit(MainServer.luggageBuffer);//Release the lock
                 }
             }

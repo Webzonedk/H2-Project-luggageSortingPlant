@@ -59,6 +59,8 @@ namespace luggageSortingPlant
                 {
                     Monitor.Pulse(MainServer.luggageBuffer);//Sending signal to LuggageWorker
                     Monitor.Exit(MainServer.luggageBuffer);//Unlocking thread
+                    int randomSleep = MainServer.random.Next(MainServer.randomSleepMin, MainServer.randomSleepMax);
+                    Thread.Sleep(randomSleep);
                 }
 
 
@@ -87,7 +89,7 @@ namespace luggageSortingPlant
                         if ((j < MainServer.checkInBuffers[i].Buffer.Length - 1) && (luggage.FlightNumber == flightNumber))
                         {
                             MainServer.checkInBuffers[i].Buffer[MainServer.checkInBufferSize - 1] = luggage;
-                            MainServer.outPut.PrintCheckInBufferCapacity(checkInNumber, j);
+                            MainServer.outPut.PrintCheckInBufferCapacity(checkInNumber, j);//Printing to console
                             luggage = null;
                         }
                     }
@@ -120,8 +122,10 @@ namespace luggageSortingPlant
                 }
                 finally
                 {
-                    Monitor.Pulse(MainServer.checkInBuffers[checkInNumber].Buffer);//Sending signal to LuggageWorker
+                    Monitor.PulseAll(MainServer.checkInBuffers[checkInNumber].Buffer);//Sending signal to LuggageWorker
                     Monitor.Exit(MainServer.checkInBuffers[checkInNumber].Buffer);//Unlocking thread
+                    int randomSleep = MainServer.random.Next(MainServer.randomSleepMin, MainServer.randomSleepMax);
+                    Thread.Sleep(randomSleep);
                 }
             }
         }

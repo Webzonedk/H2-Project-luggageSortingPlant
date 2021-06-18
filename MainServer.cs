@@ -15,15 +15,16 @@ namespace luggageSortingPlant
         public static int amountOfGates = 10;//Adjustable from WPF if possible
         public static int maxPendingFlights = 20;//Adjustable from WPF if possible
         public static int MaxLuggageBuffer = 8000;
-        public static int checkInBufferSize = 500;
+        public static int checkInBufferSize = 225;
         public static int sortBufferSize = 500;
-
+        public static int randomSleepMin = 50;
+        public static int randomSleepMax = 300;
         public static int gateBufferSize = 50;
         public static int logSize = 2000000;
-        public static int flightPlanMinInterval = 10;
-        public static int flightPlanMaxInterval = 30;
-        public static int checkInOpenBeforeDeparture = 20;
-        public static int gateOpenBeforeDeparture = 10;
+        public static int flightPlanMinInterval = 30;//secunds
+        public static int flightPlanMaxInterval = 60;//secunds
+        public static int checkInOpenBeforeDeparture = 60;//secunds
+        public static int gateOpenBeforeDeparture = 30;//secunds
 
         //Global attributes for use in the Threads
         public static Random random = new Random();
@@ -36,6 +37,8 @@ namespace luggageSortingPlant
         public static int[] numberOfSeats = new int[5] { 150, 200, 250, 300, 350 };
 
         public static FlightPlan[] flightPlans = new FlightPlan[maxPendingFlights];
+        public static List<FlightPlan> tempFlightPlan = new List<FlightPlan>();
+
         public static Luggage[] luggageBuffer = new Luggage[MaxLuggageBuffer];
 
         public static CheckInBuffer[] checkInBuffers = new CheckInBuffer[amountOfCheckIns];
@@ -54,9 +57,7 @@ namespace luggageSortingPlant
 
 
         //Instantiating Classes
-        //  public static Luggage luggage = new Luggage();
-        public static OutPut outPut = new OutPut();
-        public static CleaningLady cleaningLady = new CleaningLady();
+        public static OutPut outPut = new OutPut();//This class is only for printing in console.
 
         #region Fields
         private string name;
@@ -183,7 +184,7 @@ namespace luggageSortingPlant
             LuggageWorker createLuggage = new("LuggageWorker");
             LuggageQueueWorker sortLuggage = new();
             MainEntrance mainEntrance = new("Main Entrance");
-            CleaningLady cleaningLady = new();
+
 
 
 
@@ -237,12 +238,12 @@ namespace luggageSortingPlant
 
             luggageSorter.Start();
 
-            //mainEntranceSplitter.Start();
+            mainEntranceSplitter.Start();
 
-            //foreach (Thread worker in checkInBufferWorkers)
-            //{
-            //    worker.Start();
-            //}
+            foreach (Thread worker in checkInBufferWorkers)
+            {
+                worker.Start();
+            }
 
             //foreach (Thread worker in checkInWorkers)
             //{

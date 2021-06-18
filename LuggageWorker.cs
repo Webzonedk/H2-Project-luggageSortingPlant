@@ -51,25 +51,33 @@ namespace luggageSortingPlant
 
                 try
                 {
-                    Monitor.Enter(MainServer.luggageBuffer);//Locking the thread
-
+                    Monitor.Enter(MainServer.luggageBuffer);//Locking the luggage lock
 
 
                     if (MainServer.luggageBuffer[MainServer.MaxLuggageBuffer - 1] == null)
                     {
                         //Added a check to ensure that the randomMax will not exceed the amount og flights in the flightplan
-                        int randomMax;
-                        for (randomMax = 0; randomMax < MainServer.flightPlans.Length;)
+                        int randomMax = 0;
+                        try
                         {
-                            if (MainServer.flightPlans[randomMax] != null)
+                            Monitor.Enter(MainServer.flightPlans);//Locking the flightPlan lock
+                            for (int i = 0; i < MainServer.flightPlans.Length; i++)
                             {
-                                randomMax++;
-                            }
-                            else
-                            {
-                                break;
+                                if (MainServer.flightPlans[i] != null)
+                                {
+                                    MainServer.tempFlightPlan.Add(MainServer.flightPlans[i]);//Adding the flightplans from the array to a temporary list (This could off cause also have been an array.)
+                                    randomMax++;
+                                }
                             }
                         }
+                        finally
+                        {
+                            Monitor.PulseAll(MainServer.flightPlans);//Sending signal to other thread
+                            Monitor.Exit(MainServer.flightPlans);//Release the lock
+                        }
+
+
+
 
                         int randomFlightNumber = MainServer.random.Next(0, randomMax);
                         int countLuggage = 0;
@@ -77,14 +85,14 @@ namespace luggageSortingPlant
                         //{
                         for (int j = 0; j < MainServer.luggageBuffer.Length; j++)
                         {
-                            if ((MainServer.luggageBuffer[j] != null) && (MainServer.luggageBuffer[j].FlightNumber == MainServer.flightPlans[randomFlightNumber].FlightNumber))
+                            if ((MainServer.luggageBuffer[j] != null) && (MainServer.luggageBuffer[j].FlightNumber == MainServer.tempFlightPlan[randomFlightNumber].FlightNumber))
                             {
                                 countLuggage++;
                             }
                         }
 
                         //}
-                        if ((MainServer.flightPlans[randomFlightNumber] != null) && (countLuggage < MainServer.flightPlans[randomFlightNumber].Seats))
+                        if ((MainServer.flightPlans[randomFlightNumber] != null) && (countLuggage < MainServer.tempFlightPlan[randomFlightNumber].Seats))
                         {
                             Luggage luggage = new Luggage();
                             luggage.LuggageNumber = luggageCounter;
@@ -101,13 +109,17 @@ namespace luggageSortingPlant
 
                         }
                     }
+                    else
+                    {
+                        Monitor.Wait(MainServer.luggageBuffer);
+                    }
                 }
-
                 finally
                 {
-                    Monitor.Pulse(MainServer.luggageBuffer);//Sending signal to other thread
+                    Monitor.PulseAll(MainServer.luggageBuffer);//Sending signal to other thread
                     Monitor.Exit(MainServer.luggageBuffer);//Release the lock
-
+                    int randomSleep = MainServer.random.Next(MainServer.randomSleepMin, MainServer.randomSleepMax);
+                    Thread.Sleep(randomSleep);
                 }
             }
 
