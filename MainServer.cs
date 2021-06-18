@@ -39,8 +39,10 @@ namespace luggageSortingPlant
         public static Luggage[] luggageBuffer = new Luggage[MaxLuggageBuffer];
 
         public static CheckInBuffer[] checkInBuffers = new CheckInBuffer[amountOfCheckIns];
+        public static Thread[] checkInBufferReorderingWorkers = new Thread[amountOfCheckIns];
         public static CheckIn[] checkIns = new CheckIn[amountOfCheckIns];
         public static Thread[] checkInWorkers = new Thread[amountOfCheckIns];
+
 
         public static SortingUnitBuffer sortingUnitBuffer = new SortingUnitBuffer();
 
@@ -52,7 +54,7 @@ namespace luggageSortingPlant
 
 
         //Instantiating Classes
-      //  public static Luggage luggage = new Luggage();
+        //  public static Luggage luggage = new Luggage();
         public static OutPut outPut = new OutPut();
 
         #region Fields
@@ -141,6 +143,14 @@ namespace luggageSortingPlant
                 checkInBuffers[i] = checkIn;
             }
         }
+        public void CreateCheckInBufferReorderingWorkers()
+        {
+            for (int i = 0; i < amountOfCheckIns; i++)
+            {
+                CheckInBufferReorderngWorker checkInBufferReorderngWorker = new CheckInBufferReorderngWorker();
+                checkInBufferReorderingWorkers[i] = checkInBufferReorderngWorker;
+            }
+        }
 
         public void CreateGates()
         {
@@ -171,12 +181,12 @@ namespace luggageSortingPlant
             FlightPlanWorker createFlights = new("FlightplanWorker");
             LuggageWorker createLuggage = new("LuggageWorker");
             MainEntrance mainEntrance = new("Main Entrance");
-           CleaningLady cleaningLady = new();
+            CleaningLady cleaningLady = new();
 
 
 
-        //Initializing the workers
-        Thread flightPlanner = new(createFlights.AddFlightToFlightPlan);
+            //Initializing the workers
+            Thread flightPlanner = new(createFlights.AddFlightToFlightPlan);
             Thread luggageSpawner = new(createLuggage.CreateLuggage);
 
             //Initializing mainEntranceSPlitter
@@ -190,7 +200,7 @@ namespace luggageSortingPlant
             {
                 Thread checkInWorker = new(checkIns[i].CheckInLuggage);
                 checkInWorkers[i] = checkInWorker;
-            } 
+            }
             //Initializing checkinWorkers to the checkInWorker Array using a loop
             for (int i = 0; i < checkIns.Length; i++)
             {
@@ -217,7 +227,7 @@ namespace luggageSortingPlant
 
             luggageSpawner.Start();
 
-           // mainEntranceSplitter.Start();
+            // mainEntranceSplitter.Start();
 
             //foreach (Thread worker in checkInWorkers)
             //{
