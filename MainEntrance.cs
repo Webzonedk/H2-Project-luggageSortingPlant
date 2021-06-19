@@ -40,6 +40,7 @@ namespace luggageSortingPlant
             while (true)
             {
                 Luggage luggage = new();
+                //receive luggage from the hall, represented with the Luggagebuffer
                 try
                 {
                     Monitor.Enter(MainServer.luggageBuffer);//Locking the thread
@@ -67,6 +68,7 @@ namespace luggageSortingPlant
                 int flightNumber = 0;
                 int checkInNumber = 0;
                 // int gateNumber = 0;
+                //Sending the luggage to the right checkins
                 try
                 {
 

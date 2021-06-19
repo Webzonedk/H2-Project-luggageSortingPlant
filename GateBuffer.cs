@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace luggageSortingPlant
 {
@@ -51,13 +52,30 @@ namespace luggageSortingPlant
         {
             while (true)
             {
-                if (MainServer.luggageBuffer[0] == null)
+
+                try
                 {
-                    for (int i = 1; i < MainServer.luggageBuffer.Length; i++)
+                    Monitor.Enter(MainServer.gateBuffers[GateNumber]);//Locking the thread
+
+                    for (int i = 0; i < MainServer.gateBuffers[GateNumber].Buffer.Length - 1; i++)
+                {
+                    if (MainServer.gateBuffers[GateNumber].Buffer[i] == null)
                     {
-                        MainServer.luggageBuffer[i - 1] = MainServer.luggageBuffer[i];
+                        MainServer.gateBuffers[GateNumber].Buffer[i] = MainServer.gateBuffers[GateNumber].Buffer[i + 1];
+                        MainServer.gateBuffers[GateNumber].Buffer[i + 1] = null;
                     }
                 }
+
+                }
+                finally
+                {
+                    Monitor.PulseAll(MainServer.gateBuffers[GateNumber]);//Sending signal to other thread
+                    Monitor.Exit(MainServer.gateBuffers[GateNumber]);//Release the lock
+                }
+
+
+
+               
             }
         }
         #endregion
