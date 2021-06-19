@@ -144,8 +144,8 @@ namespace luggageSortingPlant
         {
             for (int i = 0; i < amountOfCheckIns; i++)
             {
-                CheckInBuffer checkIn = new CheckInBuffer(i);
-                checkInBuffers[i] = checkIn;
+                CheckInBuffer checkInBuffer = new CheckInBuffer(i);
+                checkInBuffers[i] = checkInBuffer;
             }
         }
 
@@ -182,11 +182,11 @@ namespace luggageSortingPlant
 
 
             //Instantiates the classes
-            FlightPlanWorker createFlights = new("FlightplanWorker");
-            FlightPlanQueueWorker sortFlightPlan = new();
-            LuggageWorker createLuggage = new("LuggageWorker");
-            LuggageQueueWorker sortLuggage = new();
-            MainEntrance mainEntrance = new("Main Entrance");
+            FlightPlanWorker createFlights = new FlightPlanWorker("FlightplanWorker");
+            FlightPlanQueueWorker sortFlightPlan = new FlightPlanQueueWorker();
+            LuggageWorker createLuggage = new LuggageWorker("LuggageWorker");
+            LuggageQueueWorker sortLuggage = new LuggageQueueWorker();
+            MainEntrance mainEntrance = new MainEntrance();
 
 
 

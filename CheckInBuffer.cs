@@ -11,11 +11,7 @@ namespace luggageSortingPlant
     {
         #region Fields
         private int checkInNumber;
-
-
-
         private Luggage[] buffer = new Luggage[MainServer.checkInBufferSize];
-
         #endregion
 
 
@@ -31,22 +27,23 @@ namespace luggageSortingPlant
             get { return buffer; }
             set { buffer = value; }
         }
-
         #endregion
+
+
 
         #region Constructors
         public CheckInBuffer()
         {
 
         }
+        //initializing
         public CheckInBuffer(int checkInNumber)
         {
             this.checkInNumber = checkInNumber;
         }
-        //Instantiating
-
-
         #endregion
+
+
 
         #region Methods
         public void ReorderingCheckInBuffer()//Reordering the checkin Buffers to work as a queue with first in first out.
