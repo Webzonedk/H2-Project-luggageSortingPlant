@@ -54,6 +54,7 @@ namespace luggageSortingPlant
                 {
                     Monitor.PulseAll(MainServer.flightPlans);//Sending signal to other thread
                     Monitor.Exit(MainServer.flightPlans);//Release the lock
+
                     int randomSleep = MainServer.random.Next(MainServer.randomSleepMin, MainServer.randomSleepMax);
                     Thread.Sleep(randomSleep);
                 }

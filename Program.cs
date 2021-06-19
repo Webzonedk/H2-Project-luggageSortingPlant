@@ -9,7 +9,6 @@ namespace luggageSortingPlant
         static void Main(string[] args)
         {
             manager.RunSimulation();
-           
         }
     }
 }

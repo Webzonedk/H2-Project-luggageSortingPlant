@@ -30,7 +30,7 @@ namespace luggageSortingPlant
         #endregion
 
 
-
+        //Initializing the class
         #region Constructors
         public LuggageWorker(string workerName)
         {
@@ -53,6 +53,7 @@ namespace luggageSortingPlant
                 {
                     Monitor.Enter(MainServer.luggageBuffer);//Locking the luggage lock
 
+                    Monitor.Enter(MainServer.flightPlans);//Locking the flightPlan lock
 
                     if (MainServer.luggageBuffer[MainServer.MaxLuggageBuffer - 1] == null)
                     {
@@ -60,20 +61,18 @@ namespace luggageSortingPlant
                         int randomMax = 0;
                         try
                         {
-                            Monitor.Enter(MainServer.flightPlans);//Locking the flightPlan lock
                             for (int i = 0; i < MainServer.flightPlans.Length; i++)
                             {
                                 if (MainServer.flightPlans[i] != null)
                                 {
-                                    MainServer.tempFlightPlan.Add(MainServer.flightPlans[i]);//Adding the flightplans from the array to a temporary list (This could off cause also have been an array.)
+                                    MainServer.tempFlightPlans[randomMax] = MainServer.flightPlans[i];//Adding the flightplans from the array to a temporary array
                                     randomMax++;
                                 }
                             }
                         }
                         finally
                         {
-                            Monitor.PulseAll(MainServer.flightPlans);//Sending signal to other thread
-                            Monitor.Exit(MainServer.flightPlans);//Release the lock
+
                         }
 
 
@@ -81,18 +80,17 @@ namespace luggageSortingPlant
 
                         int randomFlightNumber = MainServer.random.Next(0, randomMax);
                         int countLuggage = 0;
-                        //if (MainServer.luggageBuffer[0] != null)
-                        //{
+
                         for (int j = 0; j < MainServer.luggageBuffer.Length; j++)
                         {
-                            if ((MainServer.luggageBuffer[j] != null) && (MainServer.luggageBuffer[j].FlightNumber == MainServer.tempFlightPlan[randomFlightNumber].FlightNumber))
+                            if ((MainServer.luggageBuffer[j] != null) && (MainServer.luggageBuffer[j].FlightNumber == MainServer.tempFlightPlans[randomFlightNumber].FlightNumber))
                             {
                                 countLuggage++;
                             }
                         }
 
-                        //}
-                        if ((MainServer.flightPlans[randomFlightNumber] != null) && (countLuggage < MainServer.tempFlightPlan[randomFlightNumber].Seats))
+
+                        if ((MainServer.tempFlightPlans[randomFlightNumber] != null) && (countLuggage < MainServer.tempFlightPlans[randomFlightNumber].Seats))
                         {
                             Luggage luggage = new Luggage();
                             luggage.LuggageNumber = luggageCounter;
@@ -106,7 +104,10 @@ namespace luggageSortingPlant
                             MainServer.luggageBuffer[MainServer.MaxLuggageBuffer - 1] = luggage;
                             MainServer.outPut.PrintLuggage(MainServer.MaxLuggageBuffer - 1);
                             //i = MainServer.luggageBuffer.Length;
-
+                            for (int i = 0; i < MainServer.tempFlightPlans.Length; i++)
+                            {
+                                MainServer.tempFlightPlans[i] = null;
+                            }
                         }
                     }
                     else
@@ -116,8 +117,13 @@ namespace luggageSortingPlant
                 }
                 finally
                 {
+
+                    Monitor.PulseAll(MainServer.flightPlans);//Sending signal to other thread
+                    Monitor.Exit(MainServer.flightPlans);//Release the lock
+
                     Monitor.PulseAll(MainServer.luggageBuffer);//Sending signal to other thread
                     Monitor.Exit(MainServer.luggageBuffer);//Release the lock
+
                     int randomSleep = MainServer.random.Next(MainServer.randomSleepMin, MainServer.randomSleepMax);
                     Thread.Sleep(randomSleep);
                 }

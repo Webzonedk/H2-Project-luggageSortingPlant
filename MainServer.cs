@@ -14,12 +14,12 @@ namespace luggageSortingPlant
         public static int amountOfCheckIns = 20;//Adjustable from WPF if possible
         public static int amountOfGates = 10;//Adjustable from WPF if possible
         public static int maxPendingFlights = 20;//Adjustable from WPF if possible
-        public static int MaxLuggageBuffer = 8000;
+        public static int MaxLuggageBuffer = 7000;
         public static int checkInBufferSize = 225;
         public static int sortBufferSize = 500;
-        public static int randomSleepMin = 50;
-        public static int randomSleepMax = 300;
-        public static int gateBufferSize = 50;
+        public static int randomSleepMin = 20;
+        public static int randomSleepMax = 150;
+        public static int gateBufferSize = 350;
         public static int logSize = 2000000;
         public static int flightPlanMinInterval = 30;//secunds
         public static int flightPlanMaxInterval = 60;//secunds
@@ -37,7 +37,8 @@ namespace luggageSortingPlant
         public static int[] numberOfSeats = new int[5] { 150, 200, 250, 300, 350 };
 
         public static FlightPlan[] flightPlans = new FlightPlan[maxPendingFlights];
-        public static List<FlightPlan> tempFlightPlan = new List<FlightPlan>();
+        //public static List<FlightPlan> tempFlightPlan = new List<FlightPlan>();
+        public static FlightPlan[] tempFlightPlans = new FlightPlan[maxPendingFlights];
 
         public static Luggage[] luggageBuffer = new Luggage[MaxLuggageBuffer];
 
@@ -175,7 +176,7 @@ namespace luggageSortingPlant
             CreateGateBuffers();//Creates the gate buffers
 
 
-           // Thread.Sleep(200);
+            // Thread.Sleep(200);
 
 
             //Instantiates the classes
@@ -238,12 +239,12 @@ namespace luggageSortingPlant
 
             luggageSorter.Start();
 
-            mainEntranceSplitter.Start();
+            //mainEntranceSplitter.Start();
 
-            foreach (Thread worker in checkInBufferWorkers)
-            {
-                worker.Start();
-            }
+            //foreach (Thread worker in checkInBufferWorkers)
+            //{
+            //    worker.Start();
+            //}
 
             //foreach (Thread worker in checkInWorkers)
             //{
