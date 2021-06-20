@@ -60,7 +60,7 @@ namespace luggageSortingPlant
         public void PrintCheckInBufferCapacity(int checkInNumber, int luggageInBuffer)//Printing the capacity of the checkIn buffer
         {
             Console.BackgroundColor = ConsoleColor.Red;
-            Console.WriteLine($"CheckIn conveyor belt: {checkInNumber} now have {luggageInBuffer + 1} / {MainServer.checkInBufferSize} Suitcases on the band ");
+            Console.WriteLine($"CheckIn conveyor belt: {checkInNumber} now have {luggageInBuffer} / {MainServer.checkInBufferSize} Suitcases on the band ");
             Console.ResetColor();
         }
 

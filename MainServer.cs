@@ -11,14 +11,14 @@ namespace luggageSortingPlant
     class MainServer
     {
         //Global attributes adjustable from the Gui
-        public static int amountOfCheckIns = 20;//Adjustable from WPF if possible
-        public static int amountOfGates = 10;//Adjustable from WPF if possible
-        public static int maxPendingFlights = 20;//Adjustable from WPF if possible
-        public static int MaxLuggageBuffer = 1000;
-        public static int checkInBufferSize = 225;
+        public static int amountOfCheckIns = 2;//Adjustable from WPF if possible
+        public static int amountOfGates = 2;//Adjustable from WPF if possible
+        public static int maxPendingFlights = 3;//Adjustable from WPF if possible
+        public static int MaxLuggageBuffer = 100;
+        public static int checkInBufferSize = 5;
         public static int sortBufferSize = 500;
-        public static int randomSleepMin = 20;
-        public static int randomSleepMax = 150;
+        public static int randomSleepMin = 50;
+        public static int randomSleepMax = 250;
         public static int gateBufferSize = 350;
         public static int logSize = 2000000;
         public static int flightPlanMinInterval = 30;//secunds
@@ -43,6 +43,7 @@ namespace luggageSortingPlant
         public static FlightPlan[] tempFlightPlans = new FlightPlan[maxPendingFlights];
 
         public static Luggage[] luggageBuffer = new Luggage[MaxLuggageBuffer];
+      //  public static Luggage[] tempLuggage = new Luggage[1];//To have an object to keep temp luggage in the mainentrance
 
         public static CheckInBuffer[] checkInBuffers = new CheckInBuffer[amountOfCheckIns];
         public static Thread[] checkInBufferWorkers = new Thread[amountOfCheckIns];
