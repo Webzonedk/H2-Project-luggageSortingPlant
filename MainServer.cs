@@ -16,16 +16,16 @@ namespace luggageSortingPlant
         public static int maxPendingFlights = 3;//Adjustable from WPF if possible
         public static int MaxLuggageBuffer = 100;
         public static int checkInBufferSize = 5;
-        public static int sortBufferSize = 500;
+        public static int sortBufferSize = 5;
         public static int randomSleepMin = 50;
         public static int randomSleepMax = 250;
         public static int gateBufferSize = 350;
         public static int logSize = 2000000;
-        public static int flightPlanMinInterval = 30;//secunds
-        public static int flightPlanMaxInterval = 60;//secunds
-        public static int checkInOpenBeforeDeparture = 60;//secunds
+        public static int flightPlanMinInterval = 300;//secunds
+        public static int flightPlanMaxInterval = 600;//secunds
+        public static int checkInOpenBeforeDeparture = 600;//secunds
+        public static int checkInCloseBeforeDeparture = 40;//secunds
         public static int gateOpenBeforeDeparture = 30;//secunds
-        public static int checkInCloseBeforeDeparture = 10;//secunds
         public static int gateCloseBeforeDeparture = 2;//secunds
 
         //Global attributes for use in the Threads
@@ -51,7 +51,7 @@ namespace luggageSortingPlant
         public static Thread[] checkInWorkers = new Thread[amountOfCheckIns];
 
 
-        public static SortingUnitBuffer[] sortingUnitBuffer = new SortingUnitBuffer[sortBufferSize];
+        public static Luggage[] sortingUnitBuffer = new Luggage[sortBufferSize];
 
         public static GateBuffer[] gateBuffers = new GateBuffer[amountOfGates];
         public static Gate[] gates = new Gate[amountOfGates];

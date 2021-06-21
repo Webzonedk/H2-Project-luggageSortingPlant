@@ -78,7 +78,7 @@ namespace luggageSortingPlant
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"Luggage number: {luggage.LuggageNumber} " +
                 $"for flight number: {luggage.FlightNumber}, has arrived checkIn counter. " +
-                $"at: {luggage.CheckInTimeStamp}, has arrived checkIn counter.");
+                $"at: {luggage.CheckInTimeStamp}.");
             Console.ResetColor();
         }
 
@@ -93,7 +93,7 @@ namespace luggageSortingPlant
         {
             Console.ResetColor();
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine($"Conveyor belt for the sorting unit now have {luggageInBuffer + 1} / {MainServer.sortBufferSize} Suitcases on the band ");
+            Console.WriteLine($"Conveyor belt for the sorting unit now have {luggageInBuffer} / {MainServer.sortBufferSize} Suitcases on the band ");
             Console.ResetColor();
         }
 

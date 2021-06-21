@@ -41,6 +41,10 @@ namespace luggageSortingPlant
                             MainServer.flightPlans[i] = MainServer.flightPlans[i + 1];
                             MainServer.flightPlans[i + 1] = null;
                         }
+                        else
+                        {
+                            Monitor.Wait(MainServer.flightPlans);
+                        }
                     }
 
 

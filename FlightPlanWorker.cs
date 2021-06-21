@@ -64,7 +64,7 @@ namespace luggageSortingPlant
                             flightPlan.DepartureTime = MainServer.flightPlans[MainServer.maxPendingFlights - 2].DepartureTime.AddSeconds(MainServer.random.Next(MainServer.flightPlanMinInterval, MainServer.flightPlanMaxInterval));
                         }
                         MainServer.flightPlans[MainServer.maxPendingFlights - 1] = flightPlan;
-                    MainServer.outPut.PrintFlightPlan(MainServer.maxPendingFlights - 1);//Send parameter with the method
+                        MainServer.outPut.PrintFlightPlan(MainServer.maxPendingFlights - 1);//Send parameter with the method
                     }
                     else
                     {

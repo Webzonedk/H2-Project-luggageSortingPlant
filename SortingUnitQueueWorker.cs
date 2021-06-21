@@ -28,11 +28,11 @@ namespace luggageSortingPlant
         {
             while (true)
             {
-                if (MainServer.sortingUnitBuffer.Buffer[0] == null)//If the buffer index 0 is empty
+                if (MainServer.sortingUnitBuffer[0] == null)//If the buffer index 0 is empty
                 {
-                    for (int i = 1; i < MainServer.sortingUnitBuffer.Buffer.Length; i++)//Loop through all boxes in the array
+                    for (int i = 1; i < MainServer.sortingUnitBuffer.Length; i++)//Loop through all boxes in the array
                     {
-                        MainServer.sortingUnitBuffer.Buffer[i - 1] = MainServer.sortingUnitBuffer.Buffer[i];//Move all content oft the indexes one down
+                        MainServer.sortingUnitBuffer[i - 1] = MainServer.sortingUnitBuffer[i];//Move all content oft the indexes one down
                     }
                 }
             }

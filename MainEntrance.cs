@@ -42,8 +42,8 @@ namespace luggageSortingPlant
                 //receive luggage from the hall, represented with the Luggagebuffer
                 try
                 {
-                    Monitor.Enter(MainServer.luggageBuffer);//Locking the thread
 
+                    Monitor.Enter(MainServer.luggageBuffer);//Locking the thread
                     if ((MainServer.luggageBuffer[0] != null) && (tempLuggage[0] == null))
                     {
 
