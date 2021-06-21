@@ -26,76 +26,73 @@ namespace luggageSortingPlant
         #endregion
         public void PrintFlightPlan(int i)//Method with argument
         {
-            Console.Write("{0,-10}", $"{MainServer.flightPlans[i].FlightNumber}"); 
-            Console.Write("{0,-35}", $"{MainServer.flightPlans[i].Destination}");
-            Console.Write("{0,7}", $"{MainServer.flightPlans[i].Seats}");
-            Console.Write("{0,10}", $"{MainServer.flightPlans[i].GateNumber}");
-            Console.Write("{0,25}", $"{MainServer.flightPlans[i].DepartureTime}\n");
-        }
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"Fligtnumber {MainServer.flightPlans[i].FlightNumber} " +
+                $"with destination {MainServer.flightPlans[i].Destination} " +
+                $"with {MainServer.flightPlans[i].Seats} " +
+                $"departure from gate: {MainServer.flightPlans[i].GateNumber} " +
+                $"at: {MainServer.flightPlans[i].DepartureTime}");
+            Console.ResetColor();
+  }
 
         public void PrintLuggage(int i)//Method with argument
         {
-            Console.Write("{0,-10}", $"{MainServer.luggageBuffer[i].LuggageNumber}");
-            Console.Write("{0,-10}", $"{MainServer.luggageBuffer[i].PassengerNumber}");
-            Console.Write("{0,-35}", $"{MainServer.luggageBuffer[i].PassengerName}");
-            Console.Write("{0,10}", $"{MainServer.luggageBuffer[i].FlightNumber}");
-            Console.Write("{0,25}", $"{MainServer.luggageBuffer[i].CheckInTimeStamp}");
-            Console.Write("{0,25}", $"{MainServer.luggageBuffer[i].SortInTimeStmap}");
-            Console.Write("{0,25}", $"{MainServer.luggageBuffer[i].SortOutTimeStamp}");
-            Console.Write("{0,25}", $"{MainServer.luggageBuffer[i].GateArrivalTimeStamp}\n");
-        }
+            Console.ResetColor();
+            Console.WriteLine($"Luggagge nr.: {MainServer.luggageBuffer[i].LuggageNumber} " +
+                $"passenger nr.:{MainServer.luggageBuffer[i].PassengerNumber} " +
+                $"Name: {MainServer.luggageBuffer[i].PassengerName}\t\t" +
+                $"For flight: {MainServer.luggageBuffer[i].FlightNumber} has been created.");
+            Console.ResetColor();
+  }
 
         public void PrintArrivedToTheAirport(Luggage luggage) //MainEntrance Arrival
         {
-            Console.Write($"Passenger: ");
-            Console.Write($"{luggage.PassengerName}, ");
-            Console.Write($"with Passenger number: ");
-            Console.Write($"{luggage.PassengerNumber} ");
-            Console.Write($"and luggage number: ");
-            Console.Write($"{luggage.LuggageNumber}");
-            Console.Write($"for flight number: ");
-            Console.Write("{0,10}", $"{luggage.FlightNumber}, has arrived to the airport.\n");
-        }
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine($"Passenger: {luggage.PassengerName}, " +
+                $"with Passenger number: {luggage.PassengerNumber} " +
+                $"and luggage number: {luggage.LuggageNumber} " +
+                $"for flight number: {luggage.FlightNumber}, has arrived to the airport. ");
+            Console.ResetColor();
+  }
 
         public void PrintCheckInBufferCapacity(int checkInNumber, int luggageInBuffer)//Printing the capacity of the checkIn buffer
         {
-            Console.BackgroundColor = ConsoleColor.Red;
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"CheckIn conveyor belt: {checkInNumber} now have {luggageInBuffer} / {MainServer.checkInBufferSize} Suitcases on the band ");
             Console.ResetColor();
         }
 
         public void PrintCheckInBufferWorkerOutput(int checkInNumber)
         {
-            Console.BackgroundColor = ConsoleColor.Red;
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine($"Reordered CheckIn buffer {checkInNumber}");
             Console.ResetColor();
         }
 
         public void PrintCheckInArrival(Luggage luggage) //Printing when luggage arrives to checkin
         {
-            Console.BackgroundColor = ConsoleColor.Green;
-            Console.Write($"Luggage number: ");
-            Console.Write($"{luggage.LuggageNumber}");
-            Console.Write($"for flight number: ");
-            Console.Write("{0,10}", $"{luggage.FlightNumber}, has arrived checkIn counter. ");
-            Console.Write($"at: ");
-            Console.Write("{0,10}", $"{luggage.CheckInTimeStamp}, has arrived checkIn counter.\n");
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"Luggage number: {luggage.LuggageNumber} " +
+                $"for flight number: {luggage.FlightNumber}, has arrived checkIn counter. " +
+                $"at: {luggage.CheckInTimeStamp}, has arrived checkIn counter.");
             Console.ResetColor();
         }
 
         public void PrintCheckInOut(Luggage luggage)//Not active at the moment. but can be added for debugging
         {
-            Console.BackgroundColor = ConsoleColor.Green;
-            Console.Write($"Luggage number: ");
-            Console.Write($"{luggage.LuggageNumber}");
-            Console.Write($"for flight number: ");
-            Console.Write("{0,10}", $"{luggage.FlightNumber}, has arrived checkIn counter.\n");
+            Console.ResetColor(); 
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.ResetColor();
         }
 
         public void PrintSortingBufferCapacity(int luggageInBuffer)//Printing the capacity of the sorting buffer
         {
-            Console.BackgroundColor = ConsoleColor.Yellow;
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine($"Conveyor belt for the sorting unit now have {luggageInBuffer + 1} / {MainServer.sortBufferSize} Suitcases on the band ");
             Console.ResetColor();
         }
@@ -103,26 +100,22 @@ namespace luggageSortingPlant
         public void PrintSortingArrival(Luggage luggage)//Not finish
         {
 
+            Console.ResetColor();
             Console.BackgroundColor = ConsoleColor.Green;
-            Console.Write($"Luggage number: ");
-            Console.Write($"{luggage.LuggageNumber}");
-            Console.Write($"for flight number: ");
-            Console.Write("{0,10}", $"{luggage.FlightNumber}, has arrived checkIn counter. ");
-            Console.Write($"at: ");
-            Console.Write("{0,10}", $"{luggage.CheckInTimeStamp}, has arrived checkIn counter.\n");
+            Console.WriteLine($"Luggage number: {luggage.LuggageNumber} " +
+                $"for flight number: {luggage.FlightNumber}," +
+                $" has arrived to the sortingUnit at {luggage.SortInTimeStmap}");
             Console.ResetColor();
         }
 
         public void PrintSortingDeparting(Luggage luggage)//Not finish
         {
 
+            Console.ResetColor();
             Console.BackgroundColor = ConsoleColor.Green;
-            Console.Write($"Luggage number: ");
-            Console.Write($"{luggage.LuggageNumber}");
-            Console.Write($"for flight number: ");
-            Console.Write("{0,10}", $"{luggage.FlightNumber}, has arrived checkIn counter. ");
-            Console.Write($"at: ");
-            Console.Write("{0,10}", $"{luggage.CheckInTimeStamp}, has arrived checkIn counter.\n");
+            Console.WriteLine($"Luggage number: {luggage.LuggageNumber} " +
+                $"for flight number: {luggage.FlightNumber}," +
+                $" has left the the sortingUnit at {luggage.SortOutTimeStamp}");
             Console.ResetColor();
         }
 

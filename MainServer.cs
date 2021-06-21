@@ -51,7 +51,7 @@ namespace luggageSortingPlant
         public static Thread[] checkInWorkers = new Thread[amountOfCheckIns];
 
 
-        public static SortingUnitBuffer sortingUnitBuffer = new SortingUnitBuffer();
+        public static SortingUnitBuffer[] sortingUnitBuffer = new SortingUnitBuffer[sortBufferSize];
 
         public static GateBuffer[] gateBuffers = new GateBuffer[amountOfGates];
         public static Gate[] gates = new Gate[amountOfGates];
@@ -249,10 +249,10 @@ namespace luggageSortingPlant
                 worker.Start();
             }
 
-            //foreach (Thread worker in checkInWorkers)
-            //{
-            //    worker.Start();
-            //}
+            foreach (Thread worker in checkInWorkers)
+            {
+                worker.Start();
+            }
 
             //foreach (Thread worker in gateWorkers)
             //{

@@ -32,10 +32,10 @@ namespace luggageSortingPlant
         #region Methods
         public void SendLuggageToCheckIn()
         {
-                int checkInNumber;
-                int flightNumber;
-              //  Luggage luggage;
-                Luggage[] tempLuggage = new Luggage[1];//To have an object array to keep temp luggage in the mainentrance
+            int checkInNumber;
+            int flightNumber;
+            //  Luggage luggage;
+            Luggage[] tempLuggage = new Luggage[1];//To have an object array to keep temp luggage in the mainentrance
 
             while (true)
             {
@@ -47,7 +47,7 @@ namespace luggageSortingPlant
                     if ((MainServer.luggageBuffer[0] != null) && (tempLuggage[0] == null))
                     {
 
-                       // luggage = MainServer.luggageBuffer[0];
+                        // luggage = MainServer.luggageBuffer[0];
                         Array.Copy(MainServer.luggageBuffer, 0, tempLuggage, 0, 1);//Copy first index from luggagebuffer to the temp array
 
                         MainServer.luggageBuffer[0] = null;
@@ -141,9 +141,9 @@ namespace luggageSortingPlant
                                     Array.Copy(tempLuggage, 0, MainServer.checkInBuffers[i].Buffer, MainServer.checkInBufferSize - 1, 1);//Copy first index from tempLuggage to the last index in the current checkIn buffer array
 
                                     MainServer.outPut.PrintCheckInBufferCapacity(checkInNumber, 1);//Printing to console
-                                    Thread.Sleep(100);
                                     tempLuggage[0] = null;
                                 };
+
                                 if (tempLuggage[0] == null)
                                 {
                                     i = MainServer.checkInBuffers.Length;
@@ -155,7 +155,30 @@ namespace luggageSortingPlant
                         }
                         finally
                         {
+                        };
+                    };
+
+                    //If luggage object is still not null after first and secund check, then 
+                    if (tempLuggage[0] != null)
+                    {
+                        try
+                        {
+                            Monitor.Enter(MainServer.luggageBuffer);//Locking the thread
+                            if (MainServer.luggageBuffer[MainServer.MaxLuggageBuffer - 1] == null)
+                            {
+                                Array.Copy(tempLuggage, 0, MainServer.luggageBuffer, MainServer.MaxLuggageBuffer - 1, 1);//Copy first index from tempLuggage to the last index in the luggage buffer array
+                                tempLuggage[0] = null;
+                            }
+                            else
+                            {
+                                Monitor.Wait(MainServer.luggageBuffer);//Setting the thread in waiting state
+                            };
                         }
+                        finally
+                        {
+                            Monitor.Pulse(MainServer.luggageBuffer);//Sending signal to LuggageWorker
+                            Monitor.Exit(MainServer.luggageBuffer);//Unlocking thread
+                        };
                     };
                 }
                 finally

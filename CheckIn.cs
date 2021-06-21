@@ -57,6 +57,8 @@ namespace luggageSortingPlant
 
         public void CheckInLuggage()
         {
+            Luggage[] tempLuggage = new Luggage[1];//To have an object array to keep temp luggage in the mainentrance
+
             while (true)
             {
 
@@ -69,9 +71,13 @@ namespace luggageSortingPlant
                     //find flight in flightplan and get departuretime
                     for (int i = 0; i < MainServer.flightPlans.Length; i++)
                     {
-                        if (MainServer.flightPlans[i].FlightNumber == MainServer.checkInBuffers[checkInNumber].Buffer[0].FlightNumber)
+                        if (MainServer.checkInBuffers[checkInNumber].Buffer[0] != null)
                         {
-                            departure = MainServer.flightPlans[i].DepartureTime;//getting the depaturtime to use to open checkin
+                            if (MainServer.flightPlans[i].FlightNumber == MainServer.checkInBuffers[checkInNumber].Buffer[0].FlightNumber)
+                            {
+                                departure = MainServer.flightPlans[i].DepartureTime;//getting the depaturtime to use to open checkin
+                            }
+
                         }
                     }
                 }
@@ -82,7 +88,7 @@ namespace luggageSortingPlant
                 }
 
                 //Creating an object to contain the luggage
-                Luggage luggage = new();
+                Luggage luggage = new Luggage();
 
                 //removing luggage from the checkIn buffer
                 try
@@ -93,24 +99,24 @@ namespace luggageSortingPlant
                     {
                         Open = true;
                     }
+                    if (((departure - DateTime.Now).TotalSeconds <= MainServer.checkInCloseBeforeDeparture))
+                    {
+                        Open = false;
+                    }
                     if (Open == true)
                     {
 
                         if (MainServer.checkInBuffers[CheckInNumber].Buffer[0] != null)
                         {
-                            luggage = MainServer.checkInBuffers[CheckInNumber].Buffer[0];
-                            luggage.CheckInTimeStamp = DateTime.Now;
-                            MainServer.outPut.PrintCheckInArrival(luggage);
+                            Array.Copy(MainServer.checkInBuffers[CheckInNumber].Buffer, 0, tempLuggage, 0, 1);//Copy first index from checkIn buffer to the temp array
+                            tempLuggage[0].CheckInTimeStamp = DateTime.Now;
+                            MainServer.outPut.PrintCheckInArrival(tempLuggage[0]);
                             MainServer.checkInBuffers[CheckInNumber].Buffer[0] = null;
-
                         }
                         else
                         {
                             Monitor.Wait(MainServer.checkInBuffers[checkInNumber].Buffer);//Setting the thread in waiting state
                         }
-
-
-
                     }
                 }
                 finally
@@ -126,8 +132,8 @@ namespace luggageSortingPlant
                     Monitor.Enter(MainServer.sortingUnitBuffer);//Locking the thread
                     if (MainServer.sortingUnitBuffer.Buffer[MainServer.sortBufferSize - 1] == null)
                     {
-                        MainServer.sortingUnitBuffer.Buffer[MainServer.sortBufferSize - 1] = luggage;
-                        luggage = null;
+                        MainServer.sortingUnitBuffer.Buffer[MainServer.sortBufferSize - 1] = tempLuggage[0];
+                        tempLuggage[0] = null;
                         int i;
                         for (i = 0; i < MainServer.sortingUnitBuffer.Buffer.Length;)
                         {
