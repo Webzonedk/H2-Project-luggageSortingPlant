@@ -32,22 +32,22 @@ namespace luggageSortingPlant
         #region Methods
         public void SendLuggageToCheckIn()
         {
-            while (true)
-            {
                 int checkInNumber;
                 int flightNumber;
-                Luggage luggage;
+              //  Luggage luggage;
                 Luggage[] tempLuggage = new Luggage[1];//To have an object array to keep temp luggage in the mainentrance
 
+            while (true)
+            {
                 //receive luggage from the hall, represented with the Luggagebuffer
                 try
                 {
                     Monitor.Enter(MainServer.luggageBuffer);//Locking the thread
 
-                    if (MainServer.luggageBuffer[0] != null)
+                    if ((MainServer.luggageBuffer[0] != null) && (tempLuggage[0] == null))
                     {
 
-                        luggage = MainServer.luggageBuffer[0];
+                       // luggage = MainServer.luggageBuffer[0];
                         Array.Copy(MainServer.luggageBuffer, 0, tempLuggage, 0, 1);//Copy first index from luggagebuffer to the temp array
 
                         MainServer.luggageBuffer[0] = null;
@@ -72,46 +72,52 @@ namespace luggageSortingPlant
                 //Sending the luggage to the right checkins
                 try
                 {
+
                     //Check if there is already a buffer in use for the specific flight and if thats the case, insert luggae object in that buffer
                     for (int i = 0; i < MainServer.checkInBuffers.Length; i++)//Run throught all the buffers in the array
                     {
                         checkInNumber = i;
                         Monitor.Enter(MainServer.checkInBuffers[checkInNumber]);//Locking the thread
-                                                                                //  int index = 0;
-                        for (int j = 0; j < MainServer.checkInBuffers[i].Buffer.Length; j++)//loop through the current Buffer
+                        if (MainServer.checkInBuffers[i].Buffer[MainServer.checkInBufferSize - 1] == null)
                         {
-                            if (MainServer.checkInBuffers[i].Buffer[j] != null)//Count luggage in current buffer and check the flightNumber of the luggae as well
+                            for (int j = 0; j < MainServer.checkInBuffers[i].Buffer.Length; j++)//loop through the current Buffer
                             {
-                                flightNumber = MainServer.checkInBuffers[i].Buffer[j].FlightNumber;//Select the flightNumber in current buffer
-                                                                                                   //If buffer is not full and If Luggage flightnumber is = flightNumber in the buffer
-                                                                                                   //Then insert the luggage to the last placr in the buffer, and empty the luggage object
-                                if ((j < MainServer.checkInBuffers[i].Buffer.Length - 1) && (tempLuggage[0].FlightNumber == flightNumber))
+                                if (tempLuggage[0] != null)
                                 {
-                                    Array.Copy(tempLuggage, 0, MainServer.checkInBuffers[i].Buffer, 0, 1);//Copy first index from tempLuggage to the checkIn buffer array
-
-                                    // MainServer.checkInBuffers[i].Buffer[MainServer.checkInBufferSize - 1] = tempLuggage[0];
-                                    MainServer.outPut.PrintCheckInBufferCapacity(checkInNumber, j);//Printing to console
-                                    tempLuggage[0] = null;
-                                    j = MainServer.checkInBuffers[i].Buffer.Length;
-                                    i = MainServer.checkInBuffers.Length;
+                                    if (MainServer.checkInBuffers[i].Buffer[j] != null)//If buffer index "j" in buffer "i" is not null
+                                    {
+                                        flightNumber = MainServer.checkInBuffers[i].Buffer[j].FlightNumber;//set the flightNumber to the one in the current buffer
+                                        int luggageCount = 0;
+                                        if ((j < MainServer.checkInBuffers[i].Buffer.Length - 1) && (tempLuggage[0].FlightNumber == flightNumber)) //If buffer is not full and If Luggage flightnumber is = flightNumber in the buffer
+                                        {
+                                            Array.Copy(tempLuggage, 0, MainServer.checkInBuffers[i].Buffer, MainServer.checkInBufferSize - 1, 1);//Copy first index from tempLuggage to the last index in the checkIn buffer array
+                                            int k;
+                                            for (k = 0; k < MainServer.checkInBuffers[i].Buffer.Length; k++)//Count the amount of objects in the buffer
+                                            {
+                                                if (MainServer.checkInBuffers[i].Buffer[k] != null)
+                                                {
+                                                    luggageCount++;
+                                                };
+                                            };
+                                            if ((luggageCount > 0) && (luggageCount < MainServer.checkInBuffers[i].Buffer.Length + 1))
+                                            {
+                                                MainServer.outPut.PrintCheckInBufferCapacity(checkInNumber, luggageCount);//Printing to console
+                                                tempLuggage[0] = null;
+                                            }
+                                            else
+                                            {
+                                                Monitor.Wait(MainServer.checkInBuffers[checkInNumber]);//Setting the thread in waiting state
+                                            };
+                                        };
+                                    };
                                 };
-
-
                             };
                         };
                         Monitor.PulseAll(MainServer.checkInBuffers[checkInNumber]);//Sending signal to LuggageWorker
                         Monitor.Exit(MainServer.checkInBuffers[checkInNumber]);//Unlocking thread
                     };
-                    //    int randomSleep = MainServer.random.Next(MainServer.randomSleepMin, MainServer.randomSleepMax);
-                    //    Thread.Sleep(randomSleep);
 
-                    //}
-                    //finally
-                    //{
-                    //}
 
-                    //try
-                    //{
                     //If luggage object is still not null after first check, then 
                     if (tempLuggage[0] != null)
                     {
@@ -134,9 +140,8 @@ namespace luggageSortingPlant
                                 {
                                     Array.Copy(tempLuggage, 0, MainServer.checkInBuffers[i].Buffer, MainServer.checkInBufferSize - 1, 1);//Copy first index from tempLuggage to the last index in the current checkIn buffer array
 
-                                    // MainServer.checkInBuffers[i].Buffer[MainServer.checkInBufferSize - 1] = tempLuggage[0];//Adding the luggage to the buffer
                                     MainServer.outPut.PrintCheckInBufferCapacity(checkInNumber, 1);//Printing to console
-
+                                    Thread.Sleep(100);
                                     tempLuggage[0] = null;
                                 };
                                 if (tempLuggage[0] == null)

@@ -53,13 +53,13 @@ namespace luggageSortingPlant
                 try
                 {
 
-                    Monitor.Enter(MainServer.checkInBuffers[CheckInNumber]);//Locking the thread
-                    for (int i = 0; i < MainServer.checkInBuffers[CheckInNumber].Buffer.Length - 1; i++)
+                    Monitor.Enter(MainServer.checkInBuffers[checkInNumber]);//Locking the thread
+                    for (int i = 0; i < MainServer.checkInBuffers[checkInNumber].Buffer.Length - 1; i++)
                     {
-                        if (MainServer.checkInBuffers[CheckInNumber].Buffer[i] == null)
+                        if (MainServer.checkInBuffers[checkInNumber].Buffer[i] == null)
                         {
-                            MainServer.checkInBuffers[CheckInNumber].Buffer[i] = MainServer.checkInBuffers[CheckInNumber].Buffer[i + 1];
-                            MainServer.checkInBuffers[CheckInNumber].Buffer[i + 1] = null;
+                            MainServer.checkInBuffers[checkInNumber].Buffer[i] = MainServer.checkInBuffers[checkInNumber].Buffer[i + 1];
+                            MainServer.checkInBuffers[checkInNumber].Buffer[i + 1] = null;
                         }
                     }
 
