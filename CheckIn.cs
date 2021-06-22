@@ -77,7 +77,7 @@ namespace luggageSortingPlant
                             if (MainServer.flightPlans[i].FlightNumber == MainServer.checkInBuffers[checkInNumber].Buffer[0].FlightNumber)
                             {
                                 departure = MainServer.flightPlans[i].DepartureTime;//getting the depaturtime to use to open checkin
-                                if ((departure - DateTime.Now).TotalSeconds <= MainServer.checkInOpenBeforeDeparture)
+                                if (((departure - DateTime.Now).TotalSeconds <= MainServer.checkInOpenBeforeDeparture) && ((departure - DateTime.Now).TotalSeconds >= MainServer.checkInCloseBeforeDeparture))
                                 {
                                     Open = true;
                                 };

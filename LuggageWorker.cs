@@ -32,6 +32,10 @@ namespace luggageSortingPlant
 
         //Initializing the class
         #region Constructors
+        public LuggageWorker()
+        {
+
+        }
         public LuggageWorker(string workerName)
         {
             this.workerName = workerName;

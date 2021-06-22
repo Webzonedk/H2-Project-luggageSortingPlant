@@ -25,6 +25,10 @@ namespace luggageSortingPlant
         #endregion
 
         #region Constructors
+        public FlightPlanWorker()
+        {
+
+        }
         public FlightPlanWorker(string workerName)
         {
             this.workerName = workerName;

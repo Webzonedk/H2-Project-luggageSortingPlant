@@ -34,7 +34,7 @@ namespace luggageSortingPlant
                 $"departure from gate: {MainServer.flightPlans[i].GateNumber} " +
                 $"at: {MainServer.flightPlans[i].DepartureTime}");
             Console.ResetColor();
-  }
+        }
 
         public void PrintLuggage(int i)//Method with argument
         {
@@ -44,7 +44,7 @@ namespace luggageSortingPlant
                 $"Name: {MainServer.luggageBuffer[i].PassengerName}\t\t" +
                 $"For flight: {MainServer.luggageBuffer[i].FlightNumber} has been created.");
             Console.ResetColor();
-  }
+        }
 
         public void PrintArrivedToTheAirport(Luggage luggage) //MainEntrance Arrival
         {
@@ -54,7 +54,7 @@ namespace luggageSortingPlant
                 $"and luggage number: {luggage.LuggageNumber} " +
                 $"for flight number: {luggage.FlightNumber}, has arrived to the airport. ");
             Console.ResetColor();
-  }
+        }
 
         public void PrintCheckInBufferCapacity(int checkInNumber, int luggageInBuffer)//Printing the capacity of the checkIn buffer
         {
@@ -84,7 +84,7 @@ namespace luggageSortingPlant
 
         public void PrintCheckInOut(Luggage luggage)//Not active at the moment. but can be added for debugging
         {
-            Console.ResetColor(); 
+            Console.ResetColor();
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.ResetColor();
         }
@@ -116,6 +116,16 @@ namespace luggageSortingPlant
             Console.WriteLine($"Luggage number: {luggage.LuggageNumber} " +
                 $"for flight number: {luggage.FlightNumber}," +
                 $" has left the the sortingUnit at {luggage.SortOutTimeStamp}");
+            Console.ResetColor();
+        }
+        public void PrintSortedToGate(Luggage luggage, int gateNumber)//Not finish
+        {
+            Console.ResetColor();
+            Console.BackgroundColor = ConsoleColor.Blue;
+            Console.WriteLine($"Luggage number: {luggage.LuggageNumber} " +
+                $"for flight number: {luggage.FlightNumber}," +
+                $" has left the the sortingUnit at {luggage.SortOutTimeStamp}" +
+                $"and is now in queue at gate: {gateNumber} ");
             Console.ResetColor();
         }
 

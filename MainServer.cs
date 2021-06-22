@@ -11,12 +11,12 @@ namespace luggageSortingPlant
     class MainServer
     {
         //Global attributes adjustable from the Gui
-        public static int amountOfCheckIns = 2;//Adjustable from WPF if possible
-        public static int amountOfGates = 2;//Adjustable from WPF if possible
-        public static int maxPendingFlights = 3;//Adjustable from WPF if possible
-        public static int MaxLuggageBuffer = 100;
-        public static int checkInBufferSize = 5;
-        public static int sortBufferSize = 5000;
+        public static int amountOfCheckIns = 10;//Adjustable from WPF if possible
+        public static int amountOfGates = 5;//Adjustable from WPF if possible
+        public static int maxPendingFlights = 5;//Adjustable from WPF if possible
+        public static int MaxLuggageBuffer = 350 * maxPendingFlights;
+        public static int checkInBufferSize = 200;
+        public static int sortBufferSize = 350 * maxPendingFlights;
         public static int randomSleepMin = 50;
         public static int randomSleepMax = 250;
         public static int gateBufferSize = 350;
@@ -183,12 +183,13 @@ namespace luggageSortingPlant
 
 
             //Instantiates the classes
-            FlightPlanWorker createFlights = new FlightPlanWorker("FlightplanWorker");
+            FlightPlanWorker createFlights = new FlightPlanWorker();
             FlightPlanQueueWorker sortFlightPlan = new FlightPlanQueueWorker();
-            LuggageWorker createLuggage = new LuggageWorker("LuggageWorker");
+            LuggageWorker createLuggage = new LuggageWorker();
             LuggageQueueWorker sortLuggage = new LuggageQueueWorker();
             MainEntrance mainEntrance = new MainEntrance();
             SortingUnitQueueWorker sortingUnitQueue = new SortingUnitQueueWorker();
+            SortingUnit sortingUnit = new SortingUnit();
 
 
 
@@ -223,6 +224,9 @@ namespace luggageSortingPlant
 
             //Instantiates mainEntranceSPlitter
             Thread sortingUnitQueueWorker = new(sortingUnitQueue.ReorderingSortingUnitBuffer);
+
+            //Instantiates the sortingUnit thread
+            Thread sortingUnitWorker = new(sortingUnit.SortLuggage);
 
             //Instantiates gateWorkers to the gateWorker Array using a loop
             for (int i = 0; i < gates.Length; i++)
@@ -259,6 +263,8 @@ namespace luggageSortingPlant
             }
 
             sortingUnitQueueWorker.Start();
+
+            sortingUnitWorker.Start();
 
             //foreach (Thread worker in gateWorkers)
             //{

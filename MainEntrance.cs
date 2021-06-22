@@ -67,8 +67,6 @@ namespace luggageSortingPlant
                 };
 
 
-
-                // int gateNumber = 0;
                 //Sending the luggage to the right checkins
                 try
                 {
