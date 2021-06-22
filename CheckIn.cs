@@ -127,17 +127,18 @@ namespace luggageSortingPlant
                     Monitor.Enter(MainServer.sortingUnitBuffer);//Locking the thread
                     if ((MainServer.sortingUnitBuffer[MainServer.sortBufferSize - 1] == null) && (tempLuggage[0] != null))
                     {
-                        MainServer.sortingUnitBuffer[MainServer.sortBufferSize - 1] = tempLuggage[0];
+                        Array.Copy(tempLuggage, 0, MainServer.sortingUnitBuffer, MainServer.sortBufferSize - 1, 1);//Copy first index from checkIn buffer to the temp array
                         tempLuggage[0] = null;
-                        int i;
-                        for (i = 0; i < MainServer.sortingUnitBuffer.Length;)
+                        int countLuggage = 0;
+
+                        for (int i = 0; i < MainServer.sortingUnitBuffer.Length; i++)
                         {
                             if (MainServer.sortingUnitBuffer[i] != null)
                             {
-                                i++;
+                                countLuggage++;
                             };
                         };
-                        MainServer.outPut.PrintSortingBufferCapacity(i);
+                        MainServer.outPut.PrintSortingBufferCapacity(countLuggage);
                         //}
                         //else
                         //{

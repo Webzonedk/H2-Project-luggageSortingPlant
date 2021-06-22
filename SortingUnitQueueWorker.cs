@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace luggageSortingPlant
 {
@@ -28,12 +28,23 @@ namespace luggageSortingPlant
         {
             while (true)
             {
-                if (MainServer.sortingUnitBuffer[0] == null)//If the buffer index 0 is empty
+                try
                 {
-                    for (int i = 1; i < MainServer.sortingUnitBuffer.Length; i++)//Loop through all boxes in the array
+                    Monitor.Enter(MainServer.sortingUnitBuffer);//Locking the thread
+
+                    for (int i = 0; i < MainServer.sortingUnitBuffer.Length - 1; i++)//Loop through all boxes in the array
                     {
-                        MainServer.sortingUnitBuffer[i - 1] = MainServer.sortingUnitBuffer[i];//Move all content oft the indexes one down
+                        if (MainServer.sortingUnitBuffer[i] == null)//If the buffer index 0 is empty
+                        {
+                            MainServer.sortingUnitBuffer[i] = MainServer.sortingUnitBuffer[i + 1];//Move content of the index one down
+                            MainServer.sortingUnitBuffer[i + 1] = null;//Setting the moved index to null
+                        }
                     }
+                }
+                finally
+                {
+                    Monitor.PulseAll(MainServer.sortingUnitBuffer);//Sending signal to other thread
+                    Monitor.Exit(MainServer.sortingUnitBuffer);//Release the lock
                 }
             }
         }

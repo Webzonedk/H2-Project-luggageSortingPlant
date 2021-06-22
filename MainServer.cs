@@ -16,7 +16,7 @@ namespace luggageSortingPlant
         public static int maxPendingFlights = 3;//Adjustable from WPF if possible
         public static int MaxLuggageBuffer = 100;
         public static int checkInBufferSize = 5;
-        public static int sortBufferSize = 5;
+        public static int sortBufferSize = 5000;
         public static int randomSleepMin = 50;
         public static int randomSleepMax = 250;
         public static int gateBufferSize = 350;
@@ -188,6 +188,7 @@ namespace luggageSortingPlant
             LuggageWorker createLuggage = new LuggageWorker("LuggageWorker");
             LuggageQueueWorker sortLuggage = new LuggageQueueWorker();
             MainEntrance mainEntrance = new MainEntrance();
+            SortingUnitQueueWorker sortingUnitQueue = new SortingUnitQueueWorker();
 
 
 
@@ -219,6 +220,9 @@ namespace luggageSortingPlant
                 Thread checkInWorker = new(checkIns[i].CheckInLuggage);
                 checkInWorkers[i] = checkInWorker;
             }
+
+            //Instantiates mainEntranceSPlitter
+            Thread sortingUnitQueueWorker = new(sortingUnitQueue.ReorderingSortingUnitBuffer);
 
             //Instantiates gateWorkers to the gateWorker Array using a loop
             for (int i = 0; i < gates.Length; i++)
@@ -253,6 +257,8 @@ namespace luggageSortingPlant
             {
                 worker.Start();
             }
+
+            sortingUnitQueueWorker.Start();
 
             //foreach (Thread worker in gateWorkers)
             //{

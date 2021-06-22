@@ -62,28 +62,6 @@ namespace luggageSortingPlant
                             MainServer.checkInBuffers[checkInNumber].Buffer[i + 1] = null;
                         }
                     }
-
-
-                    ////OLD VERSION
-                    //Monitor.Enter(MainServer.checkInBuffers[CheckInNumber]);//Locking the thread
-
-                    //if (MainServer.checkInBuffers[CheckInNumber].Buffer[MainServer.checkInBufferSize - 1] == null)//If the last buffer index is empty
-                    //{
-                    //    Monitor.Wait(MainServer.checkInBuffers[CheckInNumber]);//Setting the thread in waiting state
-                    //}
-                    //else
-                    //{
-                    //    if (MainServer.checkInBuffers[CheckInNumber].Buffer[0] == null)//If the first buffer index is empty
-                    //    {
-
-                    //        for (int i = 1; i < MainServer.checkInBuffers[CheckInNumber].Buffer.Length; i++)//Loop through all boxes in the array
-                    //        {
-                    //            MainServer.checkInBuffers[CheckInNumber].Buffer[i - 1] = MainServer.checkInBuffers[CheckInNumber].Buffer[i];//Move all content oft the indexes one down
-                    //        }
-                    //        MainServer.checkInBuffers[CheckInNumber].Buffer[MainServer.checkInBufferSize - 1] = null;//Setting the last index to null
-                    //        MainServer.outPut.PrintCheckInBufferWorkerOutput(CheckInNumber);
-                    //    }
-                    //}
                 }
                 finally
                 {

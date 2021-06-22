@@ -75,7 +75,7 @@ namespace luggageSortingPlant
         public void PrintCheckInArrival(Luggage luggage) //Printing when luggage arrives to checkin
         {
             Console.ResetColor();
-            Console.ForegroundColor = ConsoleColor.Green;
+            Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine($"Luggage number: {luggage.LuggageNumber} " +
                 $"for flight number: {luggage.FlightNumber}, has arrived checkIn counter. " +
                 $"at: {luggage.CheckInTimeStamp}.");
