@@ -41,6 +41,7 @@ namespace luggageSortingPlant
         public static FlightPlan[] flightPlans = new FlightPlan[maxPendingFlights];
         //public static List<FlightPlan> tempFlightPlan = new List<FlightPlan>();
         public static FlightPlan[] tempFlightPlans = new FlightPlan[maxPendingFlights];
+        public static FlightPlan[] flightPlanLog = new FlightPlan[100];
 
         public static Luggage[] luggageBuffer = new Luggage[MaxLuggageBuffer];
       //  public static Luggage[] tempLuggage = new Luggage[1];//To have an object to keep temp luggage in the mainentrance
@@ -185,6 +186,7 @@ namespace luggageSortingPlant
             //Instantiates the classes
             FlightPlanWorker createFlights = new FlightPlanWorker();
             FlightPlanQueueWorker sortFlightPlan = new FlightPlanQueueWorker();
+            FlightPlanLogQueueWorker sortFlightPlanLog = new FlightPlanLogQueueWorker();
             LuggageWorker createLuggage = new LuggageWorker();
             LuggageQueueWorker sortLuggage = new LuggageQueueWorker();
             MainEntrance mainEntrance = new MainEntrance();
@@ -199,6 +201,9 @@ namespace luggageSortingPlant
 
             //Instantiates the FlightPlanSorter
             Thread flightPlanSorter = new(sortFlightPlan.ReorderingFlightPlan);
+
+            //Instantiates the FlightPlanLogSorter
+            Thread flightPlanLogSorter = new(sortFlightPlanLog.ReorderingFlightPlanLog);
 
             //Instantiates the LuggaggeWorker worker
             Thread luggageSpawner = new(createLuggage.CreateLuggage);
@@ -245,6 +250,8 @@ namespace luggageSortingPlant
             flightPlanner.Start();
 
             flightPlanSorter.Start();
+
+            flightPlanLogSorter.Start();
 
             luggageSpawner.Start();
 
