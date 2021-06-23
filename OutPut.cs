@@ -32,7 +32,7 @@ namespace luggageSortingPlant
                 $"with destination {MainServer.flightPlans[i].Destination} " +
                 $"with {MainServer.flightPlans[i].Seats} " +
                 $"departure from gate: {MainServer.flightPlans[i].GateNumber} " +
-                $"at: {MainServer.flightPlans[i].DepartureTime}");
+                $"at: {MainServer.flightPlans[i].DepartureTime.ToLongTimeString()}");
             Console.ResetColor();
         }
 
@@ -77,8 +77,8 @@ namespace luggageSortingPlant
             Console.ResetColor();
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine($"Luggage number: {luggage.LuggageNumber} " +
-                $"for flight number: {luggage.FlightNumber}, has arrived checkIn counter. " +
-                $"at: {luggage.CheckInTimeStamp}.");
+                $"for flight number: {luggage.FlightNumber}, has checked in " +
+                $"at: {luggage.CheckInTimeStamp.ToLongTimeString()}.");
             Console.ResetColor();
         }
 
@@ -103,7 +103,7 @@ namespace luggageSortingPlant
             Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"Luggage number: {luggage.LuggageNumber} " +
                 $"for flight number: {luggage.FlightNumber}," +
-                $" has arrived to the sortingUnit at {luggage.SortInTimeStmap}");
+                $" has arrived to the sortingUnit at {luggage.SortInTimeStmap.ToLongTimeString()}");
             Console.ResetColor();
         }
 

@@ -55,10 +55,10 @@ namespace luggageSortingPlant
                         MainServer.outPut.PrintSortingArrival(tempLuggage[0]);
                         flightNumber = tempLuggage[0].FlightNumber;
                     }
-                    //else
-                    //{
-                    //    Monitor.Wait(MainServer.sortingUnitBuffer);//Setting the thread in waiting state
-                    //};
+                    else
+                    {
+                        Monitor.Wait(MainServer.sortingUnitBuffer);//Setting the thread in waiting state
+                    };
                 }
                 finally
                 {
@@ -107,8 +107,8 @@ namespace luggageSortingPlant
                         Monitor.Pulse(MainServer.gateBuffers[gateNumber]);//Sending signal to LuggageWorker
                         Monitor.Exit(MainServer.gateBuffers[gateNumber]);//Unlocking thread
                         gateNumber = -1;
-                        int randomSleep = MainServer.random.Next(MainServer.randomSleepMin, MainServer.randomSleepMax);
-                        Thread.Sleep(randomSleep);
+                        //int randomSleep = MainServer.random.Next(MainServer.randomSleepMin, MainServer.randomSleepMax);
+                        //Thread.Sleep(randomSleep);
                     };
 
                 };

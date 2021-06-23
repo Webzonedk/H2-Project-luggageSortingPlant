@@ -54,79 +54,80 @@ namespace luggageSortingPlant
         {
             DateTime departure = DateTime.Now;
             int luggageCounter = 0;
-
-
-            try
+            while (true)
             {
-                Monitor.Enter(MainServer.flightPlans);//Locking the thread
-                Monitor.Enter(MainServer.gateBuffers[GateNumber]);//Locking the thread
-
-                if (MainServer.gateBuffers[GateNumber].Buffer[0] != null)
+                try
                 {
-                    //find flight in flightplan and get departuretime for the luggage in the buffer
-                    for (int i = 0; i < MainServer.flightPlans.Length; i++)
+                    Monitor.Enter(MainServer.flightPlans);//Locking the thread
+                    Monitor.Enter(MainServer.gateBuffers[GateNumber]);//Locking the thread
+
+                    if (MainServer.gateBuffers[GateNumber].Buffer[0] != null)
                     {
-                        if (MainServer.flightPlans[i].FlightNumber == MainServer.gateBuffers[GateNumber].Buffer[0].FlightNumber)
+                        //find flight in flightplan and get departuretime for the luggage in the buffer
+                        for (int i = 0; i < MainServer.flightPlans.Length; i++)
                         {
-                            departure = MainServer.flightPlans[i].DepartureTime;//getting the depaturtime to use to open checkin
-                            if (((departure - DateTime.Now).TotalSeconds <= MainServer.gateOpenBeforeDeparture) && ((departure - DateTime.Now).TotalSeconds >= MainServer.gateCloseBeforeDeparture))
+                            if (MainServer.flightPlans[i].FlightNumber == MainServer.gateBuffers[GateNumber].Buffer[0].FlightNumber)
                             {
-                                Open = true;
+                                departure = MainServer.flightPlans[i].DepartureTime;//getting the depaturtime to use to open checkin
+                                if (((departure - DateTime.Now).TotalSeconds <= MainServer.gateOpenBeforeDeparture) && ((departure - DateTime.Now).TotalSeconds >= MainServer.gateCloseBeforeDeparture))
+                                {
+                                    Open = true;
+                                };
+                                if ((departure - DateTime.Now).TotalSeconds <= MainServer.gateCloseBeforeDeparture)
+                                {
+                                    Open = false;
+                                };
+                                i = MainServer.flightPlans.Length;
                             };
-                            if ((departure - DateTime.Now).TotalSeconds <= MainServer.gateCloseBeforeDeparture)
-                            {
-                                Open = false;
-                            };
-                            i = MainServer.flightPlans.Length;
                         };
-                    };
 
 
-                    if (Open)// If open
-                    {
-                        //removing luggage from the gate buffer
-                        //if (MainServer.gateBuffers[gateNumber].Buffer[0] != null)
-                        //{
-                        Array.Copy(MainServer.gateBuffers[GateNumber].Buffer, 0, buffer, luggageCounter, 1);//Copy first index from gate buffer to the temp array
-                        luggageCounter++;
-                        MainServer.outPut.PrintGateCapacity(GateNumber, luggageCounter);
-                        MainServer.gateBuffers[GateNumber].Buffer[0] = null;
-                        //};
-                    };
-
-                    if ((departure - DateTime.Now).TotalSeconds <=0)
-                    {
-                        Open = false;
-                        int i;
-                        int flightNumber = 0;
-                        for (i = 0; i < buffer.Length; i++)
+                        if (Open)// If open
                         {
-                            if (buffer[i] != null)
+                            //removing luggage from the gate buffer
+                            //if (MainServer.gateBuffers[gateNumber].Buffer[0] != null)
+                            //{
+                            Array.Copy(MainServer.gateBuffers[GateNumber].Buffer, 0, buffer, luggageCounter, 1);//Copy first index from gate buffer to the temp array
+                            luggageCounter++;
+                            MainServer.outPut.PrintGateCapacity(GateNumber, luggageCounter);
+                            MainServer.gateBuffers[GateNumber].Buffer[0] = null;
+                            //};
+                        };
+
+                        if ((departure - DateTime.Now).TotalSeconds <= 0)
+                        {
+                            Open = false;
+                            int i;
+                            int flightNumber = 0;
+                            for (i = 0; i < buffer.Length; i++)
                             {
-                                Array.Copy(buffer, i, MainServer.flightPlanLog, MainServer.logSize - 1, 1);
-                                buffer[i] = null;
-                                flightNumber = MainServer.flightPlanLog[i].FlightNumber;
+                                if (buffer[i] != null)
+                                {
+                                    Array.Copy(buffer, i, MainServer.flightPlanLog, MainServer.logSize - 1, 1);
+                                    buffer[i] = null;
+                                    flightNumber = MainServer.flightPlanLog[i].FlightNumber;
+                                }
                             }
-                        }
                             MainServer.outPut.PrintTakeOff(GateNumber, flightNumber, i);
 
+                        }
                     }
+                    else
+                    {
+                        Monitor.Wait(MainServer.flightPlans);//Locking the thread
+                        Monitor.Wait(MainServer.gateBuffers[GateNumber]);//Locking the thread
+                    };
                 }
-                else
+                finally
                 {
-                    Monitor.Wait(MainServer.flightPlans);//Locking the thread
-                    Monitor.Wait(MainServer.gateBuffers[GateNumber]);//Locking the thread
-                };
-            }
-            finally
-            {
-                Monitor.PulseAll(MainServer.gateBuffers[GateNumber]);//Sending signal to other thread
-                Monitor.Exit(MainServer.gateBuffers[GateNumber]);//Release the lock
-                Monitor.PulseAll(MainServer.flightPlans);//Sending signal to other thread
-                Monitor.Exit(MainServer.flightPlans);//Release the lock
+                    Monitor.PulseAll(MainServer.gateBuffers[GateNumber]);//Sending signal to other thread
+                    Monitor.Exit(MainServer.gateBuffers[GateNumber]);//Release the lock
+                    Monitor.PulseAll(MainServer.flightPlans);//Sending signal to other thread
+                    Monitor.Exit(MainServer.flightPlans);//Release the lock
 
-                //int randomSleep = MainServer.random.Next(MainServer.randomSleepMin, MainServer.randomSleepMax);
-                //Thread.Sleep(randomSleep);
+                    //int randomSleep = MainServer.random.Next(MainServer.randomSleepMin, MainServer.randomSleepMax);
+                    //Thread.Sleep(randomSleep);
+                };
             };
         }
         #endregion
