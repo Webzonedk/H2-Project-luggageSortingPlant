@@ -69,12 +69,12 @@ namespace luggageSortingPlant
                     Monitor.Enter(MainServer.flightPlans);//Locking the thread
                     Monitor.Enter(MainServer.checkInBuffers[CheckInNumber]);//Locking the thread
 
-                    if (MainServer.checkInBuffers[checkInNumber].Buffer[0] != null)
+                    if (MainServer.checkInBuffers[CheckInNumber].Buffer[0] != null)
                     {
                         //find flight in flightplan and get departuretime
                         for (int i = 0; i < MainServer.flightPlans.Length; i++)
                         {
-                            if (MainServer.flightPlans[i].FlightNumber == MainServer.checkInBuffers[checkInNumber].Buffer[0].FlightNumber)
+                            if (MainServer.flightPlans[i].FlightNumber == MainServer.checkInBuffers[CheckInNumber].Buffer[0].FlightNumber)
                             {
                                 departure = MainServer.flightPlans[i].DepartureTime;//getting the depaturtime to use to open checkin
                                 if (((departure - DateTime.Now).TotalSeconds <= MainServer.checkInOpenBeforeDeparture) && ((departure - DateTime.Now).TotalSeconds >= MainServer.checkInCloseBeforeDeparture))
@@ -85,7 +85,7 @@ namespace luggageSortingPlant
                                 {
                                     Open = false;
                                 };
-                                i = MainServer.flightPlans.Length;//Check up on this. Something fishy is going on!
+                                i = MainServer.flightPlans.Length;
                             };
 
                         };
@@ -150,7 +150,8 @@ namespace luggageSortingPlant
                     Monitor.PulseAll(MainServer.sortingUnitBuffer);//Sending signal to other thread
                     Monitor.Exit(MainServer.sortingUnitBuffer);//Release the lock
                 };
-
+                //int randomSleep = MainServer.random.Next(MainServer.randomSleepMin, MainServer.randomSleepMax);
+                //Thread.Sleep(randomSleep);
 
             };
         }

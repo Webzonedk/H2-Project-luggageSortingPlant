@@ -58,7 +58,7 @@ namespace luggageSortingPlant
                         flightNumberCounter++;
                         flightPlan.Destination = MainServer.destinations[destinationIndex];
                         flightPlan.Seats = MainServer.numberOfSeats[seats];
-                        flightPlan.GateNumber = MainServer.random.Next(1, MainServer.amountOfGates);
+                        flightPlan.GateNumber = MainServer.random.Next(0, MainServer.amountOfGates);
                         if (MainServer.flightPlans[MainServer.maxPendingFlights - 2] == null)
                         {
                             flightPlan.DepartureTime = Program.manager.CurrentTime.AddSeconds(MainServer.random.Next(MainServer.flightPlanMinInterval, MainServer.flightPlanMaxInterval));
@@ -81,8 +81,8 @@ namespace luggageSortingPlant
                     Monitor.PulseAll(MainServer.flightPlans);//Sending signal to other thread
                     Monitor.Exit(MainServer.flightPlans);//Release the lock
 
-                    int randomSleep = MainServer.random.Next(MainServer.randomSleepMin, MainServer.randomSleepMax);
-                    Thread.Sleep(randomSleep);
+                    //int randomSleep = MainServer.random.Next(MainServer.randomSleepMin, MainServer.randomSleepMax);
+                    //Thread.Sleep(randomSleep);
                 }
 
             }

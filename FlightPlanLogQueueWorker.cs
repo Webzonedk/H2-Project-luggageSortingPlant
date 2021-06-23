@@ -54,9 +54,9 @@ namespace luggageSortingPlant
                             counter++;
                         }
                     }
-                    if (counter >= 90)// If there is more than 90 logs, then delete the 20 oldest logs
+                    if (counter >= MainServer.logSize - 1000)// If there is more than 90 logs, then delete the 20 oldest logs
                     {
-                        for (int i = 0; i < 20; i++)
+                        for (int i = 0; i < 2000; i++)
                         {
                             MainServer.flightPlanLog[0 + i] = null;
                         }
@@ -67,8 +67,6 @@ namespace luggageSortingPlant
                     Monitor.PulseAll(MainServer.flightPlanLog);//Sending signal to other thread
                     Monitor.Exit(MainServer.flightPlanLog);//Release the lock
 
-                    //int randomSleep = MainServer.random.Next(MainServer.randomSleepMin, MainServer.randomSleepMax);
-                    //Thread.Sleep(randomSleep);
                 }
             }
         }

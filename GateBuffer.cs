@@ -48,34 +48,34 @@ namespace luggageSortingPlant
         #endregion
 
         #region Methods
-        public void ReorderingGateBuffer(int gateNumber)//Not yet adjusted to fit gatebuffer
+        public void ReorderingGateBuffer()//Not yet adjusted to fit gatebuffer
         {
             while (true)
             {
 
                 try
                 {
-                    Monitor.Enter(MainServer.gateBuffers[GateNumber]);//Locking the thread
+                    Monitor.Enter(MainServer.gateBuffers[gateNumber]);//Locking the thread
 
-                    for (int i = 0; i < MainServer.gateBuffers[GateNumber].Buffer.Length - 1; i++)
-                {
-                    if (MainServer.gateBuffers[GateNumber].Buffer[i] == null)
+                    for (int i = 0; i < MainServer.gateBuffers[gateNumber].Buffer.Length - 1; i++)
                     {
-                        MainServer.gateBuffers[GateNumber].Buffer[i] = MainServer.gateBuffers[GateNumber].Buffer[i + 1];
-                        MainServer.gateBuffers[GateNumber].Buffer[i + 1] = null;
+                        if (MainServer.gateBuffers[gateNumber].Buffer[i] == null)
+                        {
+                            MainServer.gateBuffers[gateNumber].Buffer[i] = MainServer.gateBuffers[gateNumber].Buffer[i + 1];
+                            MainServer.gateBuffers[gateNumber].Buffer[i + 1] = null;
+                        }
                     }
-                }
 
                 }
                 finally
                 {
-                    Monitor.PulseAll(MainServer.gateBuffers[GateNumber]);//Sending signal to other thread
-                    Monitor.Exit(MainServer.gateBuffers[GateNumber]);//Release the lock
+                    Monitor.PulseAll(MainServer.gateBuffers[gateNumber]);//Sending signal to other thread
+                    Monitor.Exit(MainServer.gateBuffers[gateNumber]);//Release the lock
                 }
 
 
 
-               
+
             }
         }
         #endregion

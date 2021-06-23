@@ -181,8 +181,8 @@ namespace luggageSortingPlant
                 }
                 finally
                 {
-                    int randomSleep = MainServer.random.Next(MainServer.randomSleepMin, MainServer.randomSleepMax);
-                    Thread.Sleep(randomSleep);
+                    //int randomSleep = MainServer.random.Next(MainServer.randomSleepMin, MainServer.randomSleepMax);
+                    //Thread.Sleep(randomSleep);
                 };
 
             };

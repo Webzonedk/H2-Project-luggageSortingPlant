@@ -29,10 +29,6 @@ namespace luggageSortingPlant
         {
 
         }
-        public SortingUnit(int sortingUnitNumber)
-        {
-            this.sortingUnitNumber = sortingUnitNumber;
-        }
 
         #endregion
 
@@ -53,18 +49,16 @@ namespace luggageSortingPlant
                     Monitor.Enter(MainServer.sortingUnitBuffer);//Locking the thread
                     if ((MainServer.sortingUnitBuffer[0] != null) && (tempLuggage[0] == null))
                     {
-
-                        // luggage = MainServer.luggageBuffer[0];
                         Array.Copy(MainServer.sortingUnitBuffer, 0, tempLuggage, 0, 1);//Copy first index from luggagebuffer to the temp array
                         tempLuggage[0].SortInTimeStmap = DateTime.Now;
                         MainServer.sortingUnitBuffer[0] = null;
                         MainServer.outPut.PrintSortingArrival(tempLuggage[0]);
                         flightNumber = tempLuggage[0].FlightNumber;
                     }
-                    else
-                    {
-                        Monitor.Wait(MainServer.sortingUnitBuffer);//Setting the thread in waiting state
-                    };
+                    //else
+                    //{
+                    //    Monitor.Wait(MainServer.sortingUnitBuffer);//Setting the thread in waiting state
+                    //};
                 }
                 finally
                 {
@@ -73,7 +67,7 @@ namespace luggageSortingPlant
                 };
 
 
-                //Sending the luggage to the right checkins
+                //Getting the right Gatenumber
                 if (tempLuggage[0] != null)
                 {
                     try
@@ -106,7 +100,6 @@ namespace luggageSortingPlant
                             Array.Copy(tempLuggage, 0, MainServer.gateBuffers[gateNumber].Buffer, MainServer.gateBufferSize - 1, 1);//Copy first index from tempLuggage to the last index in the luggage buffer array
                             MainServer.outPut.PrintSortedToGate(tempLuggage[0], gateNumber);
                             tempLuggage[0] = null;
-
                         };
                     }
                     finally
@@ -118,44 +111,75 @@ namespace luggageSortingPlant
                         Thread.Sleep(randomSleep);
                     };
 
-                    //If luggage is too late to the gate and the flight has taken off, then redirict luggage to another gate for that destination
-                    if (tempLuggage[0] != null)
+                };
+
+
+                //If luggage is too late to the gate and the gate is closed and there is a plane in the flightplan with same destination, then redirict luggage to another gate for that destination
+                if (tempLuggage[0] != null)
+                {
+                    try
+                    {
+                        Monitor.Enter(MainServer.flightPlans);//Locking the thread
+                        for (int i = 0; i < MainServer.flightPlans.Length; i++)
+                        {
+                            if (destination == MainServer.flightPlans[i].Destination)
+                            {
+                                gateNumber = MainServer.flightPlans[i].GateNumber;
+                            };
+                        };
+
+                    }
+                    finally
+                    {
+                        Monitor.Pulse(MainServer.flightPlans);//Sending signal to LuggageWorker
+                        Monitor.Exit(MainServer.flightPlans);//Unlocking thread
+                    };
+
+                    if (gateNumber != -1 && MainServer.gateBuffers[gateNumber].Buffer[MainServer.gateBufferSize - 1] == null)
                     {
                         try
                         {
-                            Monitor.Enter(MainServer.flightPlans);//Locking the thread
-                            for (int i = 0; i < MainServer.flightPlans.Length; i++)
-                            {
-                                if (destination == MainServer.flightPlans[i].Destination)
-                                {
-                                    gateNumber = MainServer.flightPlans[i].GateNumber;
-
-                                };
-                            };
+                            Monitor.Enter(MainServer.gateBuffers[gateNumber]);//Locking the thread
+                            Array.Copy(tempLuggage, 0, MainServer.gateBuffers[gateNumber].Buffer, MainServer.gateBufferSize - 1, 1);//Copy first index from tempLuggage to the last index in the luggage buffer array
+                            MainServer.outPut.PrintSortedToGate(tempLuggage[0], gateNumber);
+                            tempLuggage[0] = null;
                         }
                         finally
                         {
-                            Monitor.Pulse(MainServer.flightPlans);//Sending signal to LuggageWorker
-                            Monitor.Exit(MainServer.flightPlans);//Unlocking thread
+                            Monitor.Pulse(MainServer.gateBuffers[gateNumber]);//Sending signal to LuggageWorker
+                            Monitor.Exit(MainServer.gateBuffers[gateNumber]);//Unlocking thread
                         };
-
-                        if (gateNumber != -1 && MainServer.gateBuffers[gateNumber].Buffer[MainServer.gateBufferSize - 1] == null)
+                    }
+                    else
+                    {
+                        try
                         {
-                            try
+                            Monitor.Enter(MainServer.sortingUnitBuffer);//Sending signal to LuggageWorker
+                            if (MainServer.sortingUnitBuffer[MainServer.sortBufferSize - 1] == null)
                             {
-                                Monitor.Enter(MainServer.gateBuffers[gateNumber]);//Locking the thread
-                                Array.Copy(tempLuggage, 0, MainServer.gateBuffers[gateNumber].Buffer, MainServer.gateBufferSize - 1, 1);//Copy first index from tempLuggage to the last index in the luggage buffer array
-                                MainServer.outPut.PrintSortedToGate(tempLuggage[0], gateNumber);
+                                Array.Copy(tempLuggage, 0, MainServer.sortingUnitBuffer, MainServer.sortBufferSize - 1, 1);//Copy first index from tempLuggage to the last index in the luggage buffer array
+                                MainServer.outPut.PrintLuggageReturnedToSortingBuffer(tempLuggage[0]);//Print htat the luggage has been added to the sorting queue for next flight to that destination
                                 tempLuggage[0] = null;
-                            }
-                            finally
-                            {
-                                Monitor.Pulse(MainServer.gateBuffers[gateNumber]);//Sending signal to LuggageWorker
-                                Monitor.Exit(MainServer.gateBuffers[gateNumber]);//Unlocking thread
                             };
+                            int countLuggage = 0; ;
+                            for (int i = 0; i < MainServer.sortingUnitBuffer.Length; i++)
+                            {
+                                if (MainServer.sortingUnitBuffer[i] != null)
+                                {
+                                    countLuggage++;
+                                };
+                            };
+                            MainServer.outPut.PrintSortingBufferCapacity(countLuggage);
+                        }
+                        finally
+                        {
+                            Monitor.Pulse(MainServer.sortingUnitBuffer);//Sending signal to LuggageWorker
+                            Monitor.Exit(MainServer.sortingUnitBuffer);//Unlocking thread
                         };
                     };
                 };
+                //int randomSleep = MainServer.random.Next(MainServer.randomSleepMin, MainServer.randomSleepMax);
+                //Thread.Sleep(randomSleep);
             };
         }
         #endregion

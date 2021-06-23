@@ -64,10 +64,10 @@ namespace luggageSortingPlant
             Console.ResetColor();
         }
 
-        public void PrintCheckInBufferWorkerOutput(int checkInNumber)
+        public void PrintCheckInBufferWorkerOutput(int checkInNumber)//Not active at the moment
         {
             Console.ResetColor();
-            Console.ForegroundColor = ConsoleColor.Red;
+            Console.ForegroundColor = ConsoleColor.Gray;
             Console.WriteLine($"Reordered CheckIn buffer {checkInNumber}");
             Console.ResetColor();
         }
@@ -99,9 +99,8 @@ namespace luggageSortingPlant
 
         public void PrintSortingArrival(Luggage luggage)//Not finish
         {
-
             Console.ResetColor();
-            Console.BackgroundColor = ConsoleColor.Green;
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.WriteLine($"Luggage number: {luggage.LuggageNumber} " +
                 $"for flight number: {luggage.FlightNumber}," +
                 $" has arrived to the sortingUnit at {luggage.SortInTimeStmap}");
@@ -110,24 +109,49 @@ namespace luggageSortingPlant
 
         public void PrintSortingDeparting(Luggage luggage)//Not finish
         {
-
             Console.ResetColor();
-            Console.BackgroundColor = ConsoleColor.Green;
+            Console.ForegroundColor  = ConsoleColor.Green;
             Console.WriteLine($"Luggage number: {luggage.LuggageNumber} " +
                 $"for flight number: {luggage.FlightNumber}," +
-                $" has left the the sortingUnit at {luggage.SortOutTimeStamp}");
+                $" has left the the sortingUnit at {luggage.SortOutTimeStamp.ToLongTimeString()}");
             Console.ResetColor();
         }
         public void PrintSortedToGate(Luggage luggage, int gateNumber)//Not finish
         {
             Console.ResetColor();
-            Console.BackgroundColor = ConsoleColor.Blue;
+            Console.ForegroundColor = ConsoleColor.Blue;
             Console.WriteLine($"Luggage number: {luggage.LuggageNumber} " +
                 $"for flight number: {luggage.FlightNumber}," +
-                $" has left the the sortingUnit at {luggage.SortOutTimeStamp}" +
+                $" has left the the sortingUnit at {luggage.SortOutTimeStamp.ToLongTimeString()}" +
                 $"and is now in queue at gate: {gateNumber} ");
             Console.ResetColor();
         }
+
+        public void PrintLuggageReturnedToSortingBuffer(Luggage luggage)//Not finish
+        {
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"Luggage number: {luggage.LuggageNumber} " +
+                $"for flight number: {luggage.FlightNumber}," +
+                $" has been relocated to next flight to same destination");
+            Console.ResetColor();
+        }
+        public void PrintGateCapacity(int gateNumber, int luggageInBuffer)//Printing the capacity of the checkIn buffer
+        {
+            Console.ResetColor();
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine($"The plane at Gate: {gateNumber} now have {luggageInBuffer} / {MainServer.checkInBufferSize} Suitcases on board ");
+            Console.ResetColor();
+        }
+
+        public void PrintTakeOff(int gateNumber, int flightNumber, int luggageInBuffer)//Printing the capacity of the checkIn buffer
+        {
+            Console.ResetColor();
+            Console.BackgroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine($"The plane {flightNumber} at Gate: {gateNumber} took of with {luggageInBuffer} Suitcases on board ");
+            Console.ResetColor();
+        }
+
 
     }
 }

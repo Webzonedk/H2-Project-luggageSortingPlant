@@ -13,19 +13,19 @@ namespace luggageSortingPlant
         //Global attributes adjustable from the Gui
         public static int amountOfCheckIns = 10;//Adjustable from WPF if possible
         public static int amountOfGates = 5;//Adjustable from WPF if possible
-        public static int maxPendingFlights = 5;//Adjustable from WPF if possible
+        public static int maxPendingFlights = 10;//Adjustable from WPF if possible
         public static int MaxLuggageBuffer = 350 * maxPendingFlights;
         public static int checkInBufferSize = 200;
         public static int sortBufferSize = 350 * maxPendingFlights;
-        public static int randomSleepMin = 50;
-        public static int randomSleepMax = 250;
+        public static int randomSleepMin = 0;
+        public static int randomSleepMax = 1;
         public static int gateBufferSize = 350;
         public static int logSize = 2000000;
-        public static int flightPlanMinInterval = 300;//secunds
-        public static int flightPlanMaxInterval = 600;//secunds
-        public static int checkInOpenBeforeDeparture = 600;//secunds
-        public static int checkInCloseBeforeDeparture = 40;//secunds
-        public static int gateOpenBeforeDeparture = 30;//secunds
+        public static int flightPlanMinInterval = 60;//secunds
+        public static int flightPlanMaxInterval = 120;//secunds
+        public static int checkInOpenBeforeDeparture = 120;//secunds
+        public static int checkInCloseBeforeDeparture = 60;//secunds
+        public static int gateOpenBeforeDeparture = 60;//secunds
         public static int gateCloseBeforeDeparture = 2;//secunds
 
         //Global attributes for use in the Threads
@@ -44,7 +44,7 @@ namespace luggageSortingPlant
         public static FlightPlan[] flightPlanLog = new FlightPlan[100];
 
         public static Luggage[] luggageBuffer = new Luggage[MaxLuggageBuffer];
-      //  public static Luggage[] tempLuggage = new Luggage[1];//To have an object to keep temp luggage in the mainentrance
+        //  public static Luggage[] tempLuggage = new Luggage[1];//To have an object to keep temp luggage in the mainentrance
 
         public static CheckInBuffer[] checkInBuffers = new CheckInBuffer[amountOfCheckIns];
         public static Thread[] checkInBufferWorkers = new Thread[amountOfCheckIns];
@@ -55,10 +55,10 @@ namespace luggageSortingPlant
         public static Luggage[] sortingUnitBuffer = new Luggage[sortBufferSize];
 
         public static GateBuffer[] gateBuffers = new GateBuffer[amountOfGates];
+        public static Thread[] gateBufferWorkers = new Thread[amountOfGates];
         public static Gate[] gates = new Gate[amountOfGates];
         public static Thread[] gateWorkers = new Thread[amountOfGates];
 
-        public static Luggage[] log = new Luggage[logSize];
 
 
         //Instantiating Classes
@@ -155,7 +155,7 @@ namespace luggageSortingPlant
         {
             for (int i = 0; i < amountOfGates; i++)
             {
-                Gate gate = new Gate($"Gate {i}", false, i);
+                Gate gate = new Gate(false, i);
                 gates[i] = gate;
             }
         }
@@ -163,8 +163,8 @@ namespace luggageSortingPlant
         {
             for (int i = 0; i < amountOfGates; i++)
             {
-                GateBuffer gate = new GateBuffer();
-                gateBuffers[i] = gate;
+                GateBuffer gateBuffer = new GateBuffer(i);
+                gateBuffers[i] = gateBuffer;
             }
         }
 
@@ -233,6 +233,14 @@ namespace luggageSortingPlant
             //Instantiates the sortingUnit thread
             Thread sortingUnitWorker = new(sortingUnit.SortLuggage);
 
+            //Instantiates gateBufferWorkers to the gateBufferWorkers Array using a loop
+
+            for (int i = 0; i < gateBufferWorkers.Length; i++)
+            {
+                Thread gateBufferWorker = new(gateBuffers[i].ReorderingGateBuffer);
+                gateBufferWorkers[i] = gateBufferWorker;
+            }
+
             //Instantiates gateWorkers to the gateWorker Array using a loop
             for (int i = 0; i < gates.Length; i++)
             {
@@ -273,12 +281,16 @@ namespace luggageSortingPlant
 
             sortingUnitWorker.Start();
 
-            //foreach (Thread worker in gateWorkers)
-            //{
-            //    worker.Start();
-            //}
+            foreach (Thread worker in gateBufferWorkers)
+            {
+                worker.Start();
+            }
 
-            //mainEntranceSplitter.Start();
+
+            foreach (Thread worker in gateWorkers)
+            {
+                worker.Start();
+            }
 
 
             //-------------------------------------------------------------

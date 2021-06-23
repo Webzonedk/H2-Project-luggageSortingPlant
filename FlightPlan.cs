@@ -53,6 +53,12 @@ namespace luggageSortingPlant
             set { departureTime = value; }
         }
 
+
+
+
+        #endregion
+
+        #region Constructors
         public FlightPlan()
         {
 
@@ -67,12 +73,6 @@ namespace luggageSortingPlant
             this.departureTime = departureTime;
         }
 
-
-
-
-        #endregion
-
-        #region Constructors
 
         #endregion
 

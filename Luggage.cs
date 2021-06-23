@@ -70,6 +70,9 @@ namespace luggageSortingPlant
         }
 
 
+        #endregion
+
+        #region Constructors
         public Luggage()
         {
 
@@ -86,9 +89,6 @@ namespace luggageSortingPlant
             this.gateArrivalTimeStamp = gateArrivalTimeStamp;
         }
 
-        #endregion
-
-        #region Constructors
 
 
         #endregion
