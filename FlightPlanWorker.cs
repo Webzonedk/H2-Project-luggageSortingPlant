@@ -44,10 +44,10 @@ namespace luggageSortingPlant
             int flightNumberCounter = 0;
             while (true)
             {
+                    Monitor.Enter(MainServer.flightPlans);//Locking the thread
                 try
                 {
 
-                    Monitor.Enter(MainServer.flightPlans);//Locking the thread
 
                     if (MainServer.flightPlans[MainServer.maxPendingFlights - 1] == null)
                     {

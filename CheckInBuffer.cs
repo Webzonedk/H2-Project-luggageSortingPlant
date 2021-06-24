@@ -50,10 +50,10 @@ namespace luggageSortingPlant
         {
             while (true)
             {
+                    Monitor.Enter(MainServer.checkInBuffers[checkInNumber]);//Locking the thread
                 try
                 {
 
-                    Monitor.Enter(MainServer.checkInBuffers[checkInNumber]);//Locking the thread
                     for (int i = 0; i < MainServer.checkInBuffers[checkInNumber].Buffer.Length - 1; i++)
                     {
                         if (MainServer.checkInBuffers[checkInNumber].Buffer[i] == null)

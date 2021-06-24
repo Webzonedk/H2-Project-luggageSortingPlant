@@ -64,10 +64,10 @@ namespace luggageSortingPlant
 
 
                 DateTime departure;
-                try
-                {
                     Monitor.Enter(MainServer.checkInBuffers[CheckInNumber]);//Locking the thread
                     Monitor.Enter(MainServer.flightPlans);//Locking the thread
+                try
+                {
 
                     if (MainServer.checkInBuffers[CheckInNumber].Buffer[0] != null)
                     {

@@ -28,9 +28,9 @@ namespace luggageSortingPlant
         {
             while (true)
             {
+                    Monitor.Enter(MainServer.sortingUnitBuffer);//Locking the thread
                 try
                 {
-                    Monitor.Enter(MainServer.sortingUnitBuffer);//Locking the thread
 
                     for (int i = 0; i < MainServer.sortingUnitBuffer.Length - 1; i++)//Loop through all boxes in the array
                     {

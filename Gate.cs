@@ -56,11 +56,10 @@ namespace luggageSortingPlant
             int luggageCounter = 0;
             while (true)
             {
+                Monitor.Enter(MainServer.flightPlans);//Locking the thread
+                Monitor.Enter(MainServer.gateBuffers[GateNumber]);//Locking the thread
                 try
                 {
-                    Monitor.Enter(MainServer.flightPlans);//Locking the thread
-                    Monitor.Enter(MainServer.gateBuffers[GateNumber]);//Locking the thread
-
                     if (MainServer.gateBuffers[GateNumber].Buffer[0] != null)
                     {
                         //find flight in flightplan and get departuretime for the luggage in the buffer
@@ -93,29 +92,6 @@ namespace luggageSortingPlant
                             MainServer.gateBuffers[GateNumber].Buffer[0] = null;
                             //};
                         };
-
-                        if ((departure - DateTime.Now).TotalSeconds <= 0)
-                        {
-                            Open = false;
-                            int i;
-                            int flightNumber = 0;
-                            for (i = 0; i < buffer.Length; i++)
-                            {
-                                if (buffer[i] != null)
-                                {
-                                    Array.Copy(buffer, i, MainServer.flightPlanLog, MainServer.logSize - 1, 1);
-                                    buffer[i] = null;
-                                    flightNumber = MainServer.flightPlanLog[i].FlightNumber;
-                                }
-                            }
-                            MainServer.outPut.PrintTakeOff(GateNumber, flightNumber, i);
-
-                        }
-                    }
-                    else
-                    {
-                        Monitor.Wait(MainServer.flightPlans);//Locking the thread
-                        Monitor.Wait(MainServer.gateBuffers[GateNumber]);//Locking the thread
                     };
                 }
                 finally
@@ -128,6 +104,42 @@ namespace luggageSortingPlant
                     //int randomSleep = MainServer.random.Next(MainServer.randomSleepMin, MainServer.randomSleepMax);
                     //Thread.Sleep(randomSleep);
                 };
+                try
+                {
+                    Monitor.Enter(MainServer.flightPlanLog);//Locking the thread
+
+                    if (((departure - DateTime.Now).TotalSeconds <= 0) && (Open = false))
+                    {
+                        //Open = false;
+                        int i;
+                        int flightNumber = 0;
+                        for (i = 0; i < buffer.Length; i++)
+                        {
+                            if (buffer[i] != null)
+                            {
+                                Array.Copy(buffer, i, MainServer.flightPlanLog, MainServer.logSize - 1, 1);
+                                buffer[i] = null;
+                                flightNumber = MainServer.flightPlanLog[i].FlightNumber;
+                            };
+                        };
+                        MainServer.outPut.PrintTakeOff(GateNumber, flightNumber, i);
+
+                    };
+                }
+
+                finally
+                {
+                    Monitor.Wait(MainServer.flightPlanLog);//Locking the thread
+                    Monitor.Wait(MainServer.flightPlanLog);//Locking the thread
+
+                };
+
+                //else
+                //{
+                //    Monitor.Wait(MainServer.flightPlans);//Locking the thread
+                //    Monitor.Wait(MainServer.gateBuffers[GateNumber]);//Locking the thread
+                //};
+
             };
         }
         #endregion

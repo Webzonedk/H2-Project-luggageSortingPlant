@@ -160,9 +160,9 @@ namespace luggageSortingPlant
                     //If luggage object is still not null after first and secund check, then 
                     if (tempLuggage[0] != null)
                     {
+                        Monitor.Enter(MainServer.luggageBuffer);//Locking the thread
                         try
                         {
-                            Monitor.Enter(MainServer.luggageBuffer);//Locking the thread
                             if (MainServer.luggageBuffer[MainServer.MaxLuggageBuffer - 1] == null)
                             {
                                 Array.Copy(tempLuggage, 0, MainServer.luggageBuffer, MainServer.MaxLuggageBuffer - 1, 1);//Copy first index from tempLuggage to the last index in the luggage buffer array

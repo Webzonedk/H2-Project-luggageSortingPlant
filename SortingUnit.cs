@@ -43,10 +43,10 @@ namespace luggageSortingPlant
             {
 
                 //receive luggage from the hall, represented with the Luggagebuffer
+                Monitor.Enter(MainServer.sortingUnitBuffer);//Locking the thread
                 try
                 {
 
-                    Monitor.Enter(MainServer.sortingUnitBuffer);//Locking the thread
                     if ((MainServer.sortingUnitBuffer[0] != null) && (tempLuggage[0] == null))
                     {
                         Array.Copy(MainServer.sortingUnitBuffer, 0, tempLuggage, 0, 1);//Copy first index from luggagebuffer to the temp array
@@ -70,9 +70,9 @@ namespace luggageSortingPlant
                 //Getting the right Gatenumber
                 if (tempLuggage[0] != null)
                 {
+                    Monitor.Enter(MainServer.flightPlans);//Locking the thread
                     try
                     {
-                        Monitor.Enter(MainServer.flightPlans);//Locking the thread
                         //Getting the gateNumber and flightnumber for the luggage in tempbuffer
                         for (int i = 0; i < MainServer.flightPlans.Length; i++)
                         {
@@ -90,9 +90,9 @@ namespace luggageSortingPlant
                     };
 
                     //Moving luggage from tempbuffeer to the gatebuffer
+                    Monitor.Enter(MainServer.gateBuffers[gateNumber]);//Locking the thread
                     try
                     {
-                        Monitor.Enter(MainServer.gateBuffers[gateNumber]);//Locking the thread
 
                         if (MainServer.gateBuffers[gateNumber].Buffer[MainServer.gateBufferSize - 1] == null && gateNumber != -1)
                         {
@@ -117,9 +117,9 @@ namespace luggageSortingPlant
                 //If luggage is too late to the gate and the gate is closed and there is a plane in the flightplan with same destination, then redirict luggage to another gate for that destination
                 if (tempLuggage[0] != null)
                 {
+                    Monitor.Enter(MainServer.flightPlans);//Locking the thread
                     try
                     {
-                        Monitor.Enter(MainServer.flightPlans);//Locking the thread
                         for (int i = 0; i < MainServer.flightPlans.Length; i++)
                         {
                             if (destination == MainServer.flightPlans[i].Destination)
@@ -135,11 +135,11 @@ namespace luggageSortingPlant
                         Monitor.Exit(MainServer.flightPlans);//Unlocking thread
                     };
 
+                    Monitor.Enter(MainServer.gateBuffers[gateNumber]);//Locking the thread
                     if (gateNumber != -1 && MainServer.gateBuffers[gateNumber].Buffer[MainServer.gateBufferSize - 1] == null)
                     {
                         try
                         {
-                            Monitor.Enter(MainServer.gateBuffers[gateNumber]);//Locking the thread
                             Array.Copy(tempLuggage, 0, MainServer.gateBuffers[gateNumber].Buffer, MainServer.gateBufferSize - 1, 1);//Copy first index from tempLuggage to the last index in the luggage buffer array
                             MainServer.outPut.PrintSortedToGate(tempLuggage[0], gateNumber);
                             tempLuggage[0] = null;
@@ -152,9 +152,9 @@ namespace luggageSortingPlant
                     }
                     else
                     {
+                        Monitor.Enter(MainServer.sortingUnitBuffer);//Sending signal to LuggageWorker
                         try
                         {
-                            Monitor.Enter(MainServer.sortingUnitBuffer);//Sending signal to LuggageWorker
                             if (MainServer.sortingUnitBuffer[MainServer.sortBufferSize - 1] == null)
                             {
                                 Array.Copy(tempLuggage, 0, MainServer.sortingUnitBuffer, MainServer.sortBufferSize - 1, 1);//Copy first index from tempLuggage to the last index in the luggage buffer array

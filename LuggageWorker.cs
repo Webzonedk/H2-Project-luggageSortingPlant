@@ -53,9 +53,9 @@ namespace luggageSortingPlant
             {
 
 
+                    Monitor.Enter(MainServer.luggageBuffer);//Locking the luggage lock
                 try
                 {
-                    Monitor.Enter(MainServer.luggageBuffer);//Locking the luggage lock
 
 
                     if (MainServer.luggageBuffer[MainServer.MaxLuggageBuffer - 1] == null)

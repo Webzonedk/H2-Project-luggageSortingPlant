@@ -29,9 +29,9 @@ namespace luggageSortingPlant
         {
             while (true)
             {
+                    Monitor.Enter(MainServer.flightPlans);//Locking the thread
                 try
                 {
-                    Monitor.Enter(MainServer.flightPlans);//Locking the thread
 
 
                     for (int i = 0; i < MainServer.flightPlans.Length - 1; i++)
@@ -43,7 +43,7 @@ namespace luggageSortingPlant
                         }
                         else
                         {
-                            Monitor.Wait(MainServer.flightPlans);
+                           // Monitor.Wait(MainServer.flightPlans);
                         }
                     }
                 }
