@@ -86,13 +86,19 @@ namespace luggageSortingPlant
                             //removing luggage from the gate buffer
                             //if (MainServer.gateBuffers[gateNumber].Buffer[0] != null)
                             //{
-                            Array.Copy(MainServer.gateBuffers[GateNumber].Buffer, 0, buffer, luggageCounter, 1);//Copy first index from gate buffer to the temp array
+                            Array.Copy(MainServer.gateBuffers[GateNumber].Buffer, 0, Buffer, luggageCounter, 1);//Copy first index from gate buffer to the temp array
                             luggageCounter++;
                             MainServer.outPut.PrintGateCapacity(GateNumber, luggageCounter);
                             MainServer.gateBuffers[GateNumber].Buffer[0] = null;
                             //};
                         };
-                    };
+                    }
+                    else
+                    {
+                        Monitor.Wait(MainServer.flightPlans);//Locking the thread
+                        Monitor.Wait(MainServer.gateBuffers[GateNumber]);//Locking the thread
+
+                    }
                 }
                 finally
                 {
@@ -108,21 +114,27 @@ namespace luggageSortingPlant
                 {
                     Monitor.Enter(MainServer.flightPlanLog);//Locking the thread
 
-                    if (((departure - DateTime.Now).TotalSeconds <= 0) && (Open = false))
+                    if (((departure - DateTime.Now).TotalSeconds < 0) && (Open == false))
                     {
                         //Open = false;
                         int i;
                         int flightNumber = 0;
-                        for (i = 0; i < buffer.Length; i++)
+                        int counter = 0;
+                        for (i = 0; i < Buffer.Length; i++)
                         {
-                            if (buffer[i] != null)
+                            if ((Buffer[i] != null) && (MainServer.flightPlanLog[MainServer.logSize - 1] ==null))
                             {
-                                Array.Copy(buffer, i, MainServer.flightPlanLog, MainServer.logSize - 1, 1);
-                                buffer[i] = null;
+                                Array.Copy(Buffer, i, MainServer.flightPlanLog, MainServer.logSize - 1, 1);
+                                Buffer[i] = null;
                                 flightNumber = MainServer.flightPlanLog[i].FlightNumber;
+                            counter++;
                             };
                         };
-                        MainServer.outPut.PrintTakeOff(GateNumber, flightNumber, i);
+                        if (counter > 0)
+                        {
+                            MainServer.outPut.PrintTakeOff(GateNumber, flightNumber, counter);
+
+                        }
 
                     };
                 }

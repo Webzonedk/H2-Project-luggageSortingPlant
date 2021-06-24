@@ -21,12 +21,12 @@ namespace luggageSortingPlant
         public static int randomSleepMax = 100;
         public static int gateBufferSize = 350;
         public static int logSize = 20000;
-        public static int flightPlanMinInterval = 60;//secunds
-        public static int flightPlanMaxInterval = 120;//secunds
-        public static int checkInOpenBeforeDeparture = 120;//secunds
+        public static int flightPlanMinInterval = 120;//secunds
+        public static int flightPlanMaxInterval = 180;//secunds
+        public static int checkInOpenBeforeDeparture = 180;//secunds
         public static int checkInCloseBeforeDeparture = 60;//secunds
-        public static int gateOpenBeforeDeparture = 60;//secunds
-        public static int gateCloseBeforeDeparture = 2;//secunds
+        public static int gateOpenBeforeDeparture = 180;//secunds
+        public static int gateCloseBeforeDeparture = 10;//secunds
 
         //Global attributes for use in the Threads
         public static Random random = new Random();
@@ -287,10 +287,10 @@ namespace luggageSortingPlant
             }
 
 
-            foreach (Thread worker in gateWorkers)
-            {
-                worker.Start();
-            }
+            //foreach (Thread worker in gateWorkers)
+            //{
+            //    worker.Start();
+            //}
 
 
             //-------------------------------------------------------------
